@@ -14,7 +14,8 @@ export default function MedList() {
     const [ as_needed, setAsNeeded] = useState(false);
 
     const handlenewMedSubmit = async (event) => {
-        
+        event.preventDefault();
+
         try {
             const medicineData = {
                 title,
@@ -29,7 +30,9 @@ export default function MedList() {
                 "http://localhost:3001/api/users/saveMed",
                 medicineData
             );
-              
+
+            // refresh the table so the new medication shows up immediately
+            await getUserData();
         } catch (err) {
               console.error(err);
             }
@@ -40,12 +43,15 @@ export default function MedList() {
         setEvening(false);
         setNight(false);
         setAsNeeded(false);
-    };  
+    };
 
-    const handleDeleteMed = async (event) => {
-        event.preventDefault();
-        try{
-            
+    const handleDeleteMed = async (title) => {
+        try {
+            await axios.get(
+                `http://localhost:3001/api/users/deleteMed?title=${encodeURIComponent(title)}`
+            );
+            // refresh the table so the removed medication disappears immediately
+            await getUserData();
         } catch (err){
             console.error(err)
         }
@@ -64,7 +70,7 @@ export default function MedList() {
     }
     
         const getUserData = () => {
-        axios.get("http://localhost:3001/api/users/getSingleUser")
+        return axios.get("http://localhost:3001/api/users/getSingleUser")
         .then((response) => {
             const medlist = response.data.medList
             console.log(medlist)
@@ -129,7 +135,7 @@ export default function MedList() {
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="mt-4 mb-4">Your Medication List</h1>
-                        <Medtable medlist={medlist} />
+                        <Medtable medlist={medlist} onDelete={handleDeleteMed} />
                     </div>
                 </div>
                 <div className="row">
