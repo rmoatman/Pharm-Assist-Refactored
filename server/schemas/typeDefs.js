@@ -2,16 +2,20 @@ const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
 type medicine {
-   name: String!
-   dosage: String!
-   schedule: String!
+   _id: ID!
+   title: String!
+   morning: Boolean
+   afternoon: Boolean
+   evening: Boolean
+   night: Boolean
+   as_needed: Boolean
 }
 
  type user {
    _id: ID!
    username: String!
    email: String!
-   medlist: [medicine]
+   medList: [medicine]
 }
 type Auth {
   token: ID!
@@ -24,10 +28,10 @@ type Query {
 }
 
 type Mutation {
-  addUser(username: String!, email: String!, password: String!): Auth
+  addUser(firstName: String!, lastName: String!, username: String!, email: String!, password: String!): Auth
   login(email: String!, password: String!): Auth
-  addMed(userId: ID!, name: String!, dosage: String!, schedule: String!): user
-  removeMed(name: String!): user
+  addMed(userId: ID!, title: String!, morning: Boolean, afternoon: Boolean, evening: Boolean, night: Boolean, as_needed: Boolean): user
+  removeMed(title: String!): user
 }
 `;
 
