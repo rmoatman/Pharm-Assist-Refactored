@@ -3,6 +3,16 @@ const { Medicine } = require('../models');
 const { signToken } = require('../utils/auth');
 const jwt = require('jsonwebtoken');
 
+// In production the client is served over HTTPS from the same origin, so the
+// auth cookie must be Secure + SameSite=None. For local http://localhost dev,
+// those flags prevent the browser from storing the cookie, so relax them.
+const isProd = process.env.NODE_ENV === 'production';
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: isProd ? 'none' : 'lax',
+};
+
 module.exports = {
   async getSingleUser({ user = null, params }, res) {
     const foundUser = await User.findOne({
@@ -33,11 +43,7 @@ module.exports = {
     const token = signToken(newUser);
     // res.json({ token, newUser });
     res
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      })
+      .cookie("token", token, cookieOptions)
       .send();
   },
 
@@ -58,21 +64,15 @@ module.exports = {
     const token = signToken(user);
 
     res
-    .cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    })
+    .cookie("token", token, cookieOptions)
     .send();
   },
   
 //logout
   logout(req, res) {
     res.cookie("token", "", {
-      httpOnly: true,
+      ...cookieOptions,
       expires: new Date(0),
-      secure: true,
-      sameSite: "none",
     }).send();
   },
 
@@ -104,10 +104,10 @@ module.exports = {
     }
   },
 
-  async deleteMed({ user, params }, res) {
+  async deleteMed({ user, query }, res) {
     const updatedUser = await User.findOneAndUpdate(
       { _id: user._id },
-      { $pull: { medlist: { name: params.medicineName } } },
+      { $pull: { medList: { title: query.title } } },
       { new: true }
     );
     if (!updatedUser) {
