@@ -5,6 +5,7 @@ import SampleHeader from './components/sampleheader';
 import MedList from "./components/medlist.js";
 import Navbar from "./components/navbar.js";
 import SignUp from "./components/signup.js";
+import Login from "./components/login.js";
 import AuthContext from "./context/authcontext";
 
 // bootstrap
@@ -61,6 +62,9 @@ function Routed() {
           <>
             <Route exact path="/sign-up">
               <SignUp />
+            </Route>
+            <Route exact path="/login">
+              <Login />
             </Route>
           </>
         )}

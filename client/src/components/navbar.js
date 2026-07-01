@@ -58,6 +58,11 @@ const handleFormSubmit = async (event) => {
             <Link className="navbar-brand" to="/sign-up">Sign Up</Link>
           </li>
           )}
+          {loggedIn === false && (
+          <li className="nav-item">
+            <Link className="navbar-brand" to="/login">Log In</Link>
+          </li>
+          )}
           {loggedIn === true && (
           <li className="nav-item">
             <Link className="navbar-brand" to="/med-list">Med List</Link>
