@@ -1,46 +1,24 @@
 const db = require('./connection');
-const { User, medlist } = require('../models');
-var faker = require('faker');
-var firstName = faker.name.firstName();
-var lastName = faker.name.lastName();
-var randomEmail = faker.internet.email();
-var randomUsername = faker.internet.userName();
-var randomPassword = faker.internet.password();
+const { User } = require('../models');
+const faker = require('faker');
 
 db.once('open', async () => {
     await User.deleteMany();
-    await User.create({
-        firstName: firstName,
-        lastName: lastName,
-        username: randomUsername,
-        email: randomEmail,
-        password: randomPassword,
-        medlist: []
+
+    const users = [];
+    for (let i = 0; i < 4; i++) {
+        users.push({
+            firstName: faker.name.firstName(),
+            lastName: faker.name.lastName(),
+            username: faker.internet.userName(),
+            email: faker.internet.email(),
+            password: faker.internet.password(),
+            medList: []
+        });
+    }
+
+    await User.create(users);
+
+    console.log(`Seeded ${users.length} users`);
+    process.exit();
 });
-await User.create({
-    firstName: firstName,
-    lastName: lastName,
-    username: randomUsername,
-    email: randomEmail,
-    password: randomPassword,
-    medlist: []
-});
-await User.create({
-    firstName: firstName,
-    lastName: lastName,
-    username: randomUsername,
-    email: randomEmail,
-    password: randomPassword,
-    medlist: []
-});
-await User.create({
-    firstName: firstName,
-    lastName: lastName,
-    username: randomUsername,
-    email: randomEmail,
-    password: randomPassword,
-    medlist: []
-});
-process.exit();
-}
-);
