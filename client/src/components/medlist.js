@@ -7,10 +7,12 @@
 // After any add or delete it re-fetches the list so the table stays up to date.
 
 import React from "react";
-import { useState, useEffect } from "react"; // useState = local state; useEffect = run code after render (data loading).
+import { useState, useEffect, useRef } from "react"; // useState = local state; useEffect = run after render; useRef = point at the printable DOM node.
 import axios from "axios"; // HTTP client used to call the REST API.
+import ReactToPrint from "react-to-print"; // Adds a "print this element" trigger.
 import Medtable from "./medtable"; // Child component that renders the medications as a table.
 import InteractionWarnings from "./interactionwarnings"; // Shows any drug-interaction warnings for the list.
+import PrintableMedList from "./printablemedlist"; // Clean print-only version of the list.
 
 
 export default function MedList() {
@@ -74,10 +76,26 @@ export default function MedList() {
         }
     };
 
+    // Runs when an edited schedule is saved in the table (passed down as onUpdate).
+    // medId identifies which medication; schedule is the new time-of-day flags.
+    const handleUpdateMed = async (medId, schedule) => {
+        try {
+            await axios.post(
+                "http://localhost:3001/api/users/updateMed",
+                { medId, ...schedule }
+            );
+            // refresh so the updated schedule (and interaction check) reflect the change
+            await getUserData();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     const [medications, setMedications] = React.useState([]) // (Present but effectively unused for display.)
     const [medlist, getMedList] = useState('');              // Holds the array of medications shown in the table.
     const [interactions, setInteractions] = useState([]);          // Flagged interaction pairs from the API.
     const [checkingInteractions, setCheckingInteractions] = useState(false); // True while the interaction check runs.
+    const printRef = useRef();                                     // Points at the off-screen printable list for react-to-print.
 
     // useEffect with an empty [] dependency array runs ONCE, right after the first render.
     // Here it loads the user's medication data when the page first appears.
@@ -190,10 +208,24 @@ export default function MedList() {
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="mt-4 mb-4">Your Medication List</h1>
+                        {/* Print / Save-as-PDF button: prints the off-screen PrintableMedList below. */}
+                        <ReactToPrint
+                            trigger={() => (
+                                <button type="button" className="btn btn-outline-secondary mb-3">
+                                    Print / Save as PDF
+                                </button>
+                            )}
+                            content={() => printRef.current}
+                            documentTitle="Medication List"
+                        />
                         {/* Interaction warnings for the current list (Phase 2). */}
                         <InteractionWarnings interactions={interactions} loading={checkingInteractions} medCount={medlist.length} />
-                        {/* Medtable displays the meds; onDelete lets it call handleDeleteMed when Remove is clicked. */}
-                        <Medtable medlist={medlist} onDelete={handleDeleteMed} />
+                        {/* Medtable displays the meds; onDelete/onUpdate let it remove or edit-schedule a med. */}
+                        <Medtable medlist={medlist} onDelete={handleDeleteMed} onUpdate={handleUpdateMed} />
+                        {/* Off-screen clean copy used only for printing (kept in the DOM so react-to-print can capture it). */}
+                        <div style={{ position: "absolute", left: "-9999px", top: 0 }} aria-hidden="true">
+                            <PrintableMedList ref={printRef} meds={Array.isArray(medlist) ? medlist : []} />
+                        </div>
                     </div>
                 </div>
                 {/* Bottom section: the "Add a Medication" form (built by renderForm above). */}

@@ -1,89 +1,145 @@
 // medtable.js
-// A presentational table that displays the user's medications.
-// It receives two props from its parent (MedList):
-//   - medlist: the array of medication objects to show
-//   - onDelete: a function to call when a "Remove" button is clicked
-// It does NOT fetch or delete data itself -- it just displays rows and reports
-// clicks back up to the parent via onDelete.
+// A table that displays the user's medications and lets them edit a med's
+// dosing schedule in place. It receives three props from its parent (MedList):
+//   - medlist:  the array of medication objects to show
+//   - onDelete: called with a med's title when its "Remove" button is clicked
+//   - onUpdate: called with (medId, schedule) when an edited schedule is saved
+// The table owns a little local state to track which row is being edited and the
+// in-progress ("draft") schedule for that row; saving/deleting is done by the parent.
 
-import React from 'react'
+import React, { useState } from 'react';
 
-// Note: "props" holds the data passed in from the parent component (MedList).
-export default function medTable(props) {
+// The five time-of-day fields that make up a medication's schedule.
+const SCHEDULE_FIELDS = ['morning', 'afternoon', 'evening', 'night', 'as_needed'];
 
-    // (Old delete logic, left commented out -- deletion is now handled by the parent via onDelete.)
-    // const handleDeleteMed = async (event) => {
-    //     event.preventDefault();
-    //     try{
-    //         await axios.delete('http://localhost:3001/api/users/deleteMed',)
-    //     } catch (err){
-    //         console.error(err)
-    //     }
-    // };
-    // console.log('THIS IS PROPS')
+export default function MedTable(props) {
+    const { medlist, onDelete, onUpdate } = props;
 
-    // Builds the table's header row (<th> cells) from a fixed list of column names.
+    // Which medication row is currently being edited (its _id), or null if none.
+    const [editingId, setEditingId] = useState(null);
+    // The in-progress schedule while editing a row (a copy of that med's flags).
+    const [draft, setDraft] = useState({});
+
+    // Enter edit mode for a med: remember its id and copy its current schedule.
+    const startEdit = (med) => {
+        setEditingId(med._id);
+        setDraft({
+            morning: !!med.morning,
+            afternoon: !!med.afternoon,
+            evening: !!med.evening,
+            night: !!med.night,
+            as_needed: !!med.as_needed,
+        });
+    };
+
+    // Leave edit mode without saving.
+    const cancelEdit = () => setEditingId(null);
+
+    // Flip one checkbox in the draft schedule.
+    const toggleDraft = (field) => setDraft((d) => ({ ...d, [field]: !d[field] }));
+
+    // Save the draft schedule for a med (parent does the API call), then exit edit mode.
+    const saveEdit = async (medId) => {
+        await onUpdate(medId, draft);
+        setEditingId(null);
+    };
+
+    // Builds the table's header row from a fixed list of column names.
     const renderHeader = () => {
-        let headerElement = ['title', 'morning', 'afternoon', 'evening', 'night', 'as needed', 'remove']
-
-        // Turn each column name into an uppercase <th>. "key" helps React track list items.
+        let headerElement = ['title', 'morning', 'afternoon', 'evening', 'night', 'as needed', 'actions'];
         return headerElement.map((key, index) => {
-            return <th key={index}>{key.toUpperCase()}</th>
-        })
-    }
+            return <th key={index}>{key.toUpperCase()}</th>;
+        });
+    };
 
-    // Builds the table's body rows, one per medication.
-    const displayMeds = (props) => {
-        const {medlist, onDelete} = props // Pull the medications array and delete callback out of props.
-
-        // If there is at least one medication, render a row for each.
-        if (medlist.length>0){
-            return(
-                // Loop over each medication object and return a table row for it.
-                medlist.map((med) => {
-                    return (
-                                // Each row needs a unique "key" -- here we use the med's database _id.
-                                <tr key={med._id}>
-                                    {/* Medication name */}
-                                    <td>{med.title}</td>
-                                    {/* Read-only checkboxes showing which times of day this med is scheduled. */}
-                                    {/* checked={!!med.morning} converts the value to a true/false; readOnly = display only, not editable. */}
-                                    <td><input type="checkbox" id={`medication_${med._id}_morning`} checked={!!med.morning} readOnly aria-label={`Checkbox for ${med.title} in the morning`} /></td>
-                                    <td><input type="checkbox" id={`medication_${med._id}_afternoon`} checked={!!med.afternoon} readOnly aria-label={`Checkbox for ${med.title} in the afternoon`} /></td>
-                                    <td><input type="checkbox" id={`medication_${med._id}_evening`} checked={!!med.evening} readOnly aria-label={`Checkbox for ${med.title} in the evening`} /></td>
-                                    <td><input type="checkbox" id={`medication_${med._id}_night`} checked={!!med.night} readOnly aria-label={`Checkbox for ${med.title} in the night`} /></td>
-                                    <td><input type="checkbox" id={`medication_${med._id}_as_needed`} checked={!!med.as_needed} readOnly aria-label={`Checkbox for ${med.title} as needed`} /></td>
-                                    {/* Remove button: clicking calls onDelete(med.title), which the parent uses to delete this med. */}
-                                    <td>
-                                        <button
-                                            type="button"
-                                            className="btn btn-outline-danger btn-sm"
-                                            onClick={() => onDelete(med.title)}
-                                            aria-label={`Remove ${med.title}`}
-                                        >
-                                            Remove
-                                        </button>
-                                    </td>
-                                </tr>
-                    )
-                })
-            )
-        }else {
-            // If there are no medications, show a simple message instead of rows.
-            return (<h2>no meds!</h2>)
+    // Builds the table body: one row per medication.
+    const displayMeds = () => {
+        // Nothing saved yet (or the list hasn't loaded) -> show a friendly message.
+        if (!medlist || medlist.length === 0) {
+            return (<tr><td colSpan="7"><h2>no meds!</h2></td></tr>);
         }
-    }
+
+        return medlist.map((med) => {
+            const isEditing = editingId === med._id; // is THIS row being edited?
+
+            // A single schedule checkbox cell. While editing it's toggleable and
+            // bound to the draft; otherwise it's read-only and shows the saved value.
+            const scheduleCell = (field) => (
+                <td>
+                    <input
+                        type="checkbox"
+                        id={`medication_${med._id}_${field}`}
+                        checked={isEditing ? !!draft[field] : !!med[field]}
+                        onChange={isEditing ? () => toggleDraft(field) : undefined}
+                        readOnly={!isEditing}
+                        aria-label={`${med.title} ${field.replace('_', ' ')}`}
+                    />
+                </td>
+            );
+
+            return (
+                <tr key={med._id}>
+                    {/* Medication name */}
+                    <td>{med.title}</td>
+                    {/* The five schedule checkboxes */}
+                    {SCHEDULE_FIELDS.map((field) => (
+                        <React.Fragment key={field}>{scheduleCell(field)}</React.Fragment>
+                    ))}
+                    {/* Actions: Edit/Remove normally, or Save/Cancel while editing this row. */}
+                    <td>
+                        {isEditing ? (
+                            <>
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-success btn-sm me-2"
+                                    onClick={() => saveEdit(med._id)}
+                                    aria-label={`Save schedule for ${med.title}`}
+                                >
+                                    Save
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-secondary btn-sm"
+                                    onClick={cancelEdit}
+                                    aria-label={`Cancel editing ${med.title}`}
+                                >
+                                    Cancel
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-primary btn-sm me-2"
+                                    onClick={() => startEdit(med)}
+                                    aria-label={`Edit schedule for ${med.title}`}
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-danger btn-sm"
+                                    onClick={() => onDelete(med.title)}
+                                    aria-label={`Remove ${med.title}`}
+                                >
+                                    Remove
+                                </button>
+                            </>
+                        )}
+                    </td>
+                </tr>
+            );
+        });
+    };
+
     return (
-        // The overall table. renderHeader() fills the header; displayMeds() fills the body.
         <table className="table table-striped">
             <thead>
-                {/* Header row of column titles */}
                 <tr>{renderHeader()}</tr>
             </thead>
             <tbody>
-                {/* One row per medication (or a "no meds!" message if the list is empty) */}
-                {displayMeds(props)}
+                {displayMeds()}
             </tbody>
         </table>
-    )
+    );
 }

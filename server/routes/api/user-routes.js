@@ -20,6 +20,7 @@ const router = require('express').Router();
 const {
   getSingleUser, // fetch the currently logged-in user's data
   saveMed,       // add a medicine to the user's medList
+  updateMed,     // change a medicine's dosing schedule
   deleteMed,     // remove a medicine from the user's medList
   login,         // verify credentials and log the user in
   register,      // create a new user account
@@ -54,6 +55,10 @@ router.route('/getSingleUser').get(authMiddleware, getSingleUser);
 // POST /api/users/saveMed   -> add a medicine to the user's list.
 // Protected by authMiddleware (must be logged in).
 router.route('/saveMed').post(authMiddleware, saveMed);
+
+// POST /api/users/updateMed -> change a medicine's dosing schedule.
+// Protected by authMiddleware (must be logged in).
+router.route('/updateMed').post(authMiddleware, updateMed);
 
 // GET  /api/users/deleteMed -> delete a medicine from the user's list.
 // Protected by authMiddleware. (Note: uses GET even though it deletes.)

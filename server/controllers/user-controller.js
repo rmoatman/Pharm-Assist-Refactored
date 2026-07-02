@@ -155,6 +155,40 @@ module.exports = {
     }
   },
 
+  // updateMed: change the dosing schedule (time-of-day flags) of one medication
+  // that's already in the logged-in user's medList. The medication is identified
+  // by its subdocument _id (medId), so titles don't have to be unique.
+  // Inputs: { user } (from auth), { body: { medId, morning, afternoon, ... } }.
+  async updateMed({ user, body }, res) {
+    const { medId, morning, afternoon, evening, night, as_needed } = body;
+    try {
+      const updatedUser = await User.findOneAndUpdate(
+        // Match this user AND the specific medicine inside their medList array.
+        { _id: user._id, 'medList._id': medId },
+        // The positional "$" updates the matched medList element's fields.
+        // Coerce each flag to a real boolean so bad input can't store junk.
+        {
+          $set: {
+            'medList.$.morning': !!morning,
+            'medList.$.afternoon': !!afternoon,
+            'medList.$.evening': !!evening,
+            'medList.$.night': !!night,
+            'medList.$.as_needed': !!as_needed,
+          },
+        },
+        { new: true, runValidators: true } // return the updated doc; enforce schema rules
+      );
+      if (!updatedUser) {
+        // No user/medicine matched that id.
+        return res.status(404).json({ message: 'Medication not found.' });
+      }
+      return res.json(updatedUser); // Send back the updated user
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json(err);
+    }
+  },
+
   // deleteMed: remove a medication from the logged-in user's medList.
   // Inputs: { user } (from auth), { query } (has the med title to remove); res.
   async deleteMed({ user, query }, res) {
