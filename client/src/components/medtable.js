@@ -19,6 +19,8 @@ export default function MedTable(props) {
     const [editingId, setEditingId] = useState(null);
     // The in-progress schedule while editing a row (a copy of that med's flags).
     const [draft, setDraft] = useState({});
+    // The pill image currently shown enlarged in a modal overlay ({url, title}), or null.
+    const [enlarged, setEnlarged] = useState(null);
 
     // Enter edit mode for a med: remember its id and copy its current schedule.
     const startEdit = (med) => {
@@ -87,7 +89,9 @@ export default function MedTable(props) {
                             <img
                                 src={images[med.title]}
                                 alt={`${med.title} pill`}
-                                style={{ height: '40px', marginLeft: '8px', verticalAlign: 'middle' }}
+                                title="Click to enlarge"
+                                onClick={() => setEnlarged({ url: images[med.title], title: med.title })}
+                                style={{ height: '40px', marginLeft: '8px', verticalAlign: 'middle', cursor: 'zoom-in' }}
                             />
                         )}
                     </td>
@@ -143,13 +147,37 @@ export default function MedTable(props) {
     };
 
     return (
-        <table className="table table-striped">
-            <thead>
-                <tr>{renderHeader()}</tr>
-            </thead>
-            <tbody>
-                {displayMeds()}
-            </tbody>
-        </table>
+        <>
+            <table className="table table-striped">
+                <thead>
+                    <tr>{renderHeader()}</tr>
+                </thead>
+                <tbody>
+                    {displayMeds()}
+                </tbody>
+            </table>
+
+            {/* Click-to-enlarge overlay: shown when a thumbnail is clicked; click anywhere to close. */}
+            {enlarged && (
+                <div
+                    onClick={() => setEnlarged(null)}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={`${enlarged.title} enlarged image`}
+                    style={{
+                        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                        background: 'rgba(0,0,0,0.8)', display: 'flex',
+                        alignItems: 'center', justifyContent: 'center',
+                        zIndex: 1050, cursor: 'zoom-out', padding: '20px',
+                    }}
+                >
+                    <img
+                        src={enlarged.url}
+                        alt={`${enlarged.title} pill enlarged`}
+                        style={{ maxWidth: '90%', maxHeight: '90%', background: '#fff', boxShadow: '0 0 20px rgba(0,0,0,0.5)' }}
+                    />
+                </div>
+            )}
+        </>
     );
 }
