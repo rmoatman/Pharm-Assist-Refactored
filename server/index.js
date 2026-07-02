@@ -2,7 +2,7 @@
 // server/index.js
 // This is the MAIN ENTRY POINT for the back-end server. When you run the
 // server, this file boots up everything: it creates the Express web server,
-// attaches the Apollo GraphQL server on top of it, wires up middleware
+// wires up middleware
 // (cookies, CORS, JSON parsing), plugs in the REST routes, and finally starts
 // listening for incoming HTTP requests once the database is connected.
 // ===========================================================================
@@ -13,24 +13,9 @@ const cookieParser = require("cookie-parser"); // Middleware that reads cookies 
 const cors = require("cors");                   // Middleware that controls which other websites (origins) may call this API
 const db = require('./config/connection');     // Our Mongoose database connection object (see config/connection.js)
 const routes = require('./routes');            // Our REST API route definitions (the Express Router)
-const { ApolloServer } = require('apollo-server-express'); // Apollo: lets us run a GraphQL server inside Express
-const { typeDefs, resolvers } = require('./schemas');       // GraphQL type definitions (schema) and resolvers (the logic)
-const { authContext } = require('./utils/auth');           // Function that reads the auth token for each GraphQL request
 
 const app = express();                         // Create the Express application instance
 const PORT = process.env.PORT || 3001;         // Use the host's PORT env var if set (e.g. in production), otherwise 3001
-
-// Build the Apollo GraphQL server. typeDefs = the shape of the data,
-// resolvers = the functions that fetch/change it, and context runs on every
-// request (authContext attaches the logged-in user, if any).
-const server =  new ApolloServer({
-  typeDefs,
-  resolvers,
-  context: authContext,
-});
-
-// Attach the Apollo server to Express so GraphQL is reachable (default at /graphql).
-server.applyMiddleware({ app });
 
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded form bodies into req.body
 app.use(express.json());                          // Parse JSON request bodies into req.body

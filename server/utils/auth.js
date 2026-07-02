@@ -1,9 +1,8 @@
 // ===========================================================================
 // server/utils/auth.js
 // This file handles AUTHENTICATION using JWTs (JSON Web Tokens). A JWT is a
-// signed string that proves who a user is. This file provides three helpers:
+// signed string that proves who a user is. This file provides two helpers:
 //  - authMiddleware: protects REST routes (checks the cookie token).
-//  - authContext:    provides the logged-in user to GraphQL (Apollo) requests.
 //  - signToken:      creates a new token when a user logs in or registers.
 // ===========================================================================
 
@@ -34,36 +33,6 @@ module.exports = {
       // Token was present but invalid or expired
       console.log('Invalid token');
       return res.status(401).json({ message: 'Invalid token!' });
-    }
-  },
-
-  // Apollo Server context function for the GraphQL API: reads a Bearer token
-  // (header/query/body) and returns { user } when valid, or {} for public ops.
-  authContext: function ({ req }) {
-    // Look for the token in the request body, then the query string, then the
-    // Authorization header — whichever is found first.
-    let token = req.body?.token || req.query?.token || req.headers?.authorization;
-
-    // ["Bearer", "<tokenvalue>"]
-    // Auth headers usually look like "Bearer <token>"; strip the "Bearer " prefix
-    // to get just the token value. slice(7) drops the first 7 characters.
-    if (token && token.startsWith('Bearer ')) {
-      token = token.slice(7).trim();
-    }
-
-    if (!token) {
-      // No token: this is a public request, so return context without a user
-      return { req };
-    }
-
-    try {
-      // Verify the token and attach the user data to the GraphQL context
-      const { data } = jwt.verify(token, secret, { maxAge: expiration });
-      return { req, user: data };
-    } catch {
-      // Invalid/expired token: proceed without a user (some queries are public)
-      console.log('Invalid token');
-      return { req };
     }
   },
 
