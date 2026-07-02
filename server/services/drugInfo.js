@@ -28,6 +28,15 @@ const truncate = (s, n) => {
   return cut.replace(/[\s,;:]+$/, '') + '…'; // trim trailing punctuation before the ellipsis
 };
 
+// Like truncate but WITHOUT an ellipsis — a safety cap for the full "use" text
+// (which the client shows on hover), so it can't be unreasonably long.
+const softCap = (s, n) => {
+  if (s.length <= n) return s;
+  const cut = s.slice(0, n);
+  const sp = cut.lastIndexOf(' ');
+  return (sp > n * 0.6 ? cut.slice(0, sp) : cut).replace(/[\s,;:]+$/, '');
+};
+
 // --- appearance ("description") from how_supplied ---
 const COLORS = 'white|off-white|yellow|pink|blue|green|orange|brown|red|purple|gray|grey|tan|beige|peach|lavender|clear|colorless';
 
@@ -47,7 +56,7 @@ function extractAppearance(text) {
 function extractUse(purpose, indications) {
   // OTC labels have a short, ready-made "purpose" (e.g. "Pain reliever").
   const p = clean(purpose).replace(/^purpose[s]?:?\s*/i, '').trim();
-  if (p) return capFirst(truncate(p, 100));
+  if (p) return capFirst(softCap(p, 160));
 
   // Otherwise pull a brief phrase out of the (verbose) indications section.
   let t = clean(indications);
@@ -60,7 +69,7 @@ function extractUse(purpose, indications) {
   let use = (m ? m[1] : t.split(/(?<=[.])\s/)[0]) || '';
   use = use.replace(/^the treatment of\s+/i, '').replace(/^:\s*/, '').trim();
   if (!use) return null;
-  return capFirst(truncate(use, 120));
+  return capFirst(softCap(use, 240)); // full text; the client shows a short line + this on hover
 }
 
 // Fetch one OpenFDA label for a generic-name search.

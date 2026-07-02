@@ -84,9 +84,16 @@ export default function MedTable(props) {
                     {/* Medication name, what it's used for, then a spaced-out appearance description. */}
                     <td>
                         <strong>{med.title}</strong>
-                        {/* What the medication is used for, in italics (directly under the name). */}
+                        {/* What the medication is used for, in italics. Clamped to one line
+                            with an ellipsis; hover to see the full text (title attribute). */}
                         {info[med.title]?.use && (
-                            <div style={{ fontSize: '0.85em', color: '#333', marginTop: '2px', fontStyle: 'italic' }}>
+                            <div
+                                title={info[med.title].use}
+                                style={{
+                                    fontSize: '0.85em', color: '#333', marginTop: '2px', fontStyle: 'italic',
+                                    maxWidth: '320px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                                }}
+                            >
                                 {info[med.title].use}
                             </div>
                         )}
