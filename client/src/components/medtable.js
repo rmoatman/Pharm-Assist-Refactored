@@ -8,6 +8,7 @@
 // in-progress ("draft") schedule for that row; saving/deleting is done by the parent.
 
 import React, { useState } from 'react';
+import { goodRxUrl, singleCareUrl } from '../utils/discounts'; // Links to prescription-discount sites.
 
 // The schedule fields that make up a medication's dosing schedule.
 const SCHEDULE_FIELDS = ['morning', 'afternoon', 'evening', 'night', 'weekly', 'as_needed'];
@@ -88,6 +89,13 @@ export default function MedTable(props) {
                                 {descriptions[med.title]}
                             </div>
                         )}
+                        {/* Links to check prescription discounts for this medication. */}
+                        <div style={{ fontSize: '0.8em', marginTop: '2px' }}>
+                            💲 Discounts:{' '}
+                            <a href={goodRxUrl(med.title)} target="_blank" rel="noopener noreferrer">GoodRx</a>
+                            {' · '}
+                            <a href={singleCareUrl(med.title)} target="_blank" rel="noopener noreferrer">SingleCare</a>
+                        </div>
                     </td>
                     {/* The five schedule checkboxes */}
                     {SCHEDULE_FIELDS.map((field) => (
