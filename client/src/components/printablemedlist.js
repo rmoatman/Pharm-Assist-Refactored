@@ -71,7 +71,7 @@ const PrintableMedList = React.forwardRef(({ meds = [], interactions = [], first
 
       {/* Interaction note: only printed when the check found possible interactions. */}
       {flagged.length > 0 && (
-        <div style={{ marginTop: '16px', border: '1px solid #b00020', padding: '10px' }}>
+        <div style={{ marginTop: '0.5in', border: '1px solid #b00020', padding: '10px' }}>
           <strong>⚠️ A possible interaction was detected between:</strong>
           <ul style={{ marginTop: '6px', marginBottom: '6px' }}>
             {flagged.map((it, i) => (
