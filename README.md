@@ -15,8 +15,9 @@ Pharm-Assist is an app designed to assist users in managing their medications. P
 
 * Regularly update medications and daily schedules
 * Conveniently print (or save as PDF) an up-to-date list of medications for dosing and sharing with providers
+* Sort the list (by name or time of day) and email it to the address on file
 * Quickly check medications for possible interactions with each other
-* See what each medication is used for and what the pill looks like
+* See what each medication is used for, plus a text description of the pill (color, shape, imprint)
 * Autocomplete a medication's name and strength while adding it
 * Check for prescription discounts (GoodRx / SingleCare)
 <br><br>
@@ -132,6 +133,7 @@ This project was refactored and extended in July 2026 (with assistance from Clau
 **Features**
 * **Interaction flagging** on the medication list, plus a **public homepage checker** (enter two drugs, no sign-in).
 * **Print / Save-as-PDF** medication list, grouped into a mini-table per time of day with checkboxes.
+* **Sort** the on-screen list by name or time of day (multi-time meds sort by their earliest time), and **email** it — opens a pre-filled message in Gmail, Outlook, Yahoo, or your default mail app.
 * **Edit** a medication's dosing schedule after adding it, and a new **Weekly** dosing option.
 * **Prescription discount links** (GoodRx / SingleCare) per medication, plus a public price-check on the homepage.
 * A dedicated **Login page** and assorted UX fixes (auto-refreshing list, working delete, etc.).
