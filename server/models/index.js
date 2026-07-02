@@ -10,10 +10,10 @@
 // ===================================================================
 
 // Import the User model (a compiled Mongoose model that maps to the
-// "users" collection in MongoDB). See ./User.js for its schema.
-// NOTE: the require path is './User' (capital U). On case-sensitive
-// systems (like Linux servers) this must match the real filename.
-const User = require('./User');
+// "users" collection in MongoDB). See ./user.js for its schema.
+// The require path must match the real filename's case ('./user') so it
+// also works on case-sensitive systems like Linux servers.
+const User = require('./user');
 
 // Import the Medicine schema/model definition from ./Medicine.js.
 // (Medicine is actually a sub-document schema used inside User, so it
