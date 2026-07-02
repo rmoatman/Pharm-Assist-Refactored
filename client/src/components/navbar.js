@@ -57,7 +57,7 @@ const handleFormSubmit = async (event) => {
   return (
     <nav className="navbar navbar-expand-lg App-header">
       {/* Brand link on the left -- clicking it returns to the home page */}
-      <Link className="navbar-brand" to="/"><strong>Pharm-Assist</strong></Link>
+      <Link className="navbar-brand" to="/" style={{ fontSize: '2.5rem' }}><strong>Pharm-Assist</strong></Link>
       {/* Hamburger toggle button (Bootstrap) shown on small screens to expand/collapse the menu */}
       <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span className="navbar-toggler-icon"></span>

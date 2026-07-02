@@ -24,6 +24,7 @@ export default function About() {
   const [loading, setLoading] = useState(false);        // True while the check is running.
   const [checked, setChecked] = useState(false);        // True once a check has completed (so we show a result).
   const [priceDrug, setPriceDrug] = useState("");       // Medication name typed into the price-check box.
+  const [showDiscounts, setShowDiscounts] = useState(false); // True once "Search for Discounts!" is clicked.
 
   // Create event handler for Compare Button
   // Runs when the "Compare" form is submitted. Posts the two medication names to
@@ -69,6 +70,7 @@ export default function About() {
                 Are you concerned that your medications will negatively interact
                 with each other?{" "}
               </li>
+              <li>Do you want to look for discounts?</li>
             </ul>
             <p>
               It provides your daily medication schedule and can alert you when
@@ -85,8 +87,10 @@ export default function About() {
             className="col-lg-12 text-center p-3"
             style={{ backgroundColor: "#A2C4C9" }}
           >
-            <Link to="/sign-up">Sign up</Link> to customize your medication
-            schedule!
+            <strong>
+              <Link to="/sign-up">Sign up</Link> to customize your medication
+              schedule!
+            </strong>
           </div>
         </div>
       </div>
@@ -101,16 +105,14 @@ export default function About() {
           <div className="col-md-6 pt-5">
 
             <h3>Check Interactions between Medications</h3>
+            <p>Enter two medications to see if they may interact — no account needed.</p>
 
 {/* handleFormSubmit is defined above -- it runs the interaction check when this form is submitted */}
             {/* Medication to Compare Form */}
             <Form onSubmit={handleFormSubmit}>
 
               {/* Medication 1 to Compare */}
-              <Form.Group>
-
-                <Form.Label htmlFor="medicationOne"></Form.Label>
-
+              <Form.Group className="mb-3">
                 <MedNameInput
                   id="medicationOne"
                   placeholder="Medication 1"
@@ -118,14 +120,11 @@ export default function About() {
                   onChange={setMedicationOne}
                   required
                 />
-
               </Form.Group>
               {/* End of Medication 1 to Compare */}
 
               {/* Medication 2 to Compare */}
-              <Form.Group>
-                <Form.Label htmlFor="medicationTwo"></Form.Label>
-
+              <Form.Group className="mb-3">
                 <MedNameInput
                   id="medicationTwo"
                   placeholder="Medication 2"
@@ -133,12 +132,11 @@ export default function About() {
                   onChange={setMedicationTwo}
                   required
                 />
-
               </Form.Group>
               {/* End of Mediation 2 to Compare Form */}
 
               <button className="btn btn-outline-info mb-2 mt-2" type="submit">
-                Compare
+                Check for Interactions!
               </button>
 
             </Form>
@@ -158,20 +156,23 @@ export default function About() {
           <div className="col-md-6 pt-5">
             <h3>Check Prescription Prices</h3>
             <p>Look up discount prices for a medication — no account needed.</p>
-            <div className="mb-2">
+            <div className="mb-3">
               <MedNameInput
                 placeholder="Medication name (e.g. lisinopril)"
                 value={priceDrug}
                 onChange={setPriceDrug}
               />
             </div>
-            {/* Links appear once a name is entered; each opens that drug's price page. */}
-            {priceDrug.trim() && (
-              <div>
-                <a className="btn btn-outline-info me-2" href={goodRxUrl(priceDrug)} target="_blank" rel="noopener noreferrer">
+            <button type="button" className="btn btn-outline-info mb-2 mt-2" onClick={() => setShowDiscounts(true)}>
+              Search for Discounts!
+            </button>
+            {/* After clicking, show links that each open that drug's price page. */}
+            {showDiscounts && priceDrug.trim() && (
+              <div className="mt-3">
+                <a className="btn btn-outline-success me-2" href={goodRxUrl(priceDrug)} target="_blank" rel="noopener noreferrer">
                   GoodRx
                 </a>
-                <a className="btn btn-outline-info" href={singleCareUrl(priceDrug)} target="_blank" rel="noopener noreferrer">
+                <a className="btn btn-outline-success" href={singleCareUrl(priceDrug)} target="_blank" rel="noopener noreferrer">
                   SingleCare
                 </a>
               </div>
