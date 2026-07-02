@@ -241,16 +241,27 @@ export default function MedList() {
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="mt-4 mb-4">Your Medication List</h1>
-                        {/* Print / Save-as-PDF button: prints the off-screen PrintableMedList below. */}
-                        <ReactToPrint
-                            trigger={() => (
-                                <button type="button" className="btn btn-outline-secondary mb-3">
-                                    Print / Save as PDF
-                                </button>
-                            )}
-                            content={() => printRef.current}
-                            documentTitle="Medication List"
-                        />
+                        {/* Print button on the left, "Add a Medication" button on the right. */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            {/* Print / Save-as-PDF button: prints the off-screen PrintableMedList below. */}
+                            <ReactToPrint
+                                trigger={() => (
+                                    <button type="button" className="btn btn-outline-secondary mb-3">
+                                        Print / Save as PDF
+                                    </button>
+                                )}
+                                content={() => printRef.current}
+                                documentTitle="Medication List"
+                            />
+                            {/* Right-aligned: smooth-scrolls down to the Add a Medication section. */}
+                            <button
+                                type="button"
+                                className="btn btn-outline-info mb-3"
+                                onClick={() => document.getElementById('add-medication')?.scrollIntoView({ behavior: 'smooth' })}
+                            >
+                                Add a Medication
+                            </button>
+                        </div>
                         {/* Interaction warnings for the current list (Phase 2). */}
                         <InteractionWarnings interactions={interactions} loading={checkingInteractions} medCount={medlist.length} />
                         {/* Medtable displays the meds; onDelete/onUpdate let it remove or edit-schedule a med. */}
@@ -261,11 +272,13 @@ export default function MedList() {
                         </div>
                     </div>
                 </div>
-                {/* Bottom section: the "Add a Medication" form (built by renderForm above). */}
+                {/* Bottom section: the "Add a Medication" form, in a bordered box with
+                    extra space above it (and the scroll target for the "Add a Medication" button). */}
                 <div className="row">
                     <div className="col-md-12">
-                        <hr />
-                        {renderForm()}
+                        <div id="add-medication" className="border rounded p-4 mt-5">
+                            {renderForm()}
+                        </div>
                     </div>
                 </div>
             </div>

@@ -20,6 +20,8 @@ export default function MedTable(props) {
     const [editingId, setEditingId] = useState(null);
     // The in-progress schedule while editing a row (a copy of that med's flags).
     const [draft, setDraft] = useState({});
+    // The med._id whose "used for" tooltip is currently shown (on hover), or null.
+    const [hovered, setHovered] = useState(null);
 
     // Enter edit mode for a med: remember its id and copy its current schedule.
     const startEdit = (med) => {
@@ -84,17 +86,31 @@ export default function MedTable(props) {
                     {/* Medication name, what it's used for, then a spaced-out appearance description. */}
                     <td>
                         <strong>{med.title}</strong>
-                        {/* What the medication is used for, in italics. Clamped to one line
-                            with an ellipsis; hover to see the full text (title attribute). */}
+                        {/* What the medication is used for, in italics. Clamped to one line;
+                            hovering shows the full text in a larger, readable tooltip. */}
                         {info[med.title]?.use && (
                             <div
-                                title={info[med.title].use}
-                                style={{
-                                    fontSize: '0.85em', color: '#333', marginTop: '2px', fontStyle: 'italic',
-                                    maxWidth: '320px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                                }}
+                                style={{ position: 'relative', maxWidth: '320px' }}
+                                onMouseEnter={() => setHovered(med._id)}
+                                onMouseLeave={() => setHovered(null)}
                             >
-                                {info[med.title].use}
+                                <div style={{
+                                    fontSize: '0.85em', color: '#333', marginTop: '2px', fontStyle: 'italic',
+                                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                                }}>
+                                    {info[med.title].use}
+                                </div>
+                                {hovered === med._id && (
+                                    <div style={{
+                                        position: 'absolute', top: '100%', left: 0, zIndex: 30,
+                                        background: '#fff', color: '#000', border: '1px solid #ccc',
+                                        borderRadius: '4px', boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+                                        padding: '8px 10px', marginTop: '2px',
+                                        width: '340px', maxWidth: '90vw', whiteSpace: 'normal', fontSize: '1rem',
+                                    }}>
+                                        {info[med.title].use}
+                                    </div>
+                                )}
                             </div>
                         )}
                         {/* Appearance description, with a blank space above it. */}
