@@ -12,7 +12,7 @@
 
 const { User } = require('../models');            // The User Mongoose model (find/create/update users)
 const { Medicine } = require('../models');        // The Medicine model (imported but not directly used in this file)
-const { signToken } = require('../utils/auth');   // Helper that creates a signed JWT login token
+const { signToken, secret } = require('../utils/auth'); // Helper that creates a signed JWT + the shared signing secret
 const jwt = require('jsonwebtoken');              // JWT library, used here to verify a token in "loggedin"
 
 // In production the client is served over HTTPS from the same origin, so the
@@ -114,8 +114,7 @@ module.exports = {
     const token = req.cookies.token;    // Read the token from the cookie
     if (!token) return res.json(false); // No token at all -> not logged in
 
-    jwt.verify(token, 'mysecretsshhhhh'); // Throws if the token is invalid/expired
-    // Note: the secret string is hard-coded here (should ideally match utils/auth.js's secret).
+    jwt.verify(token, secret); // Throws if the token is invalid/expired (same secret as utils/auth.js)
 
     res.send(true);        // Token verified -> logged in
   } catch (err) {

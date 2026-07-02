@@ -9,10 +9,16 @@
 const jwt = require('jsonwebtoken'); // Library to create (sign) and verify JWT tokens
 
 // set token secret and expiration date
-const secret = 'mysecretsshhhhh'; // The secret key used to sign/verify tokens (should be kept private / in an env var)
+// The signing secret comes from the JWT_SECRET environment variable (loaded from
+// .env by index.js). The hard-coded string is only a fallback for local dev —
+// set a real, long, random JWT_SECRET in production.
+const secret = process.env.JWT_SECRET || 'mysecretsshhhhh';
 const expiration = '2h';          // Tokens are valid for 2 hours
 
 module.exports = {
+  // The JWT signing secret, exported so other modules (e.g. the controller's
+  // "loggedin" check) verify tokens with the SAME secret, not a duplicated one.
+  secret,
   // Express middleware for the REST routes: verifies the cookie token and
   // attaches req.user, or rejects the request when no valid token is present.
   authMiddleware: function (req, res, next) {

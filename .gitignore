@@ -1,2 +1,9 @@
 node_modules
-package_lock.json    
+package_lock.json
+
+# Environment files with secrets (keep .env.example, ignore real .env)
+.env
+.env.local
+
+# Claude Code local state (settings, memory, scratch)
+.claude

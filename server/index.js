@@ -7,6 +7,8 @@
 // listening for incoming HTTP requests once the database is connected.
 // ===========================================================================
 
+require('dotenv').config();                    // Load variables from a .env file into process.env (must run before other requires read them)
+
 const express = require('express');            // Express: the web-server framework that handles HTTP requests/responses
 const path = require('path');                  // Node's built-in "path" helper for building safe file paths across OSes
 const cookieParser = require("cookie-parser"); // Middleware that reads cookies from incoming requests into req.cookies
