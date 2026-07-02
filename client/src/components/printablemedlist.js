@@ -41,6 +41,8 @@ const PrintableMedList = React.forwardRef(({ meds = [], interactions = [], first
   const renderGroup = ({ label, meds }) => (
     <div key={label} style={{ marginBottom: '28px', pageBreakInside: 'avoid', breakInside: 'avoid' }}>
       <h3 style={{ margin: '0 0 4px' }}>{label}</h3>
+      {/* Line across the page between the category and its first medicine */}
+      <hr style={{ border: 'none', borderTop: '1px solid #333', margin: '0 0 8px' }} />
       <table style={{ borderCollapse: 'collapse' }}>
         <tbody>
           {meds.map((m) => (
@@ -53,8 +55,6 @@ const PrintableMedList = React.forwardRef(({ meds = [], interactions = [], first
           ))}
         </tbody>
       </table>
-      {/* Line across the page under this category */}
-      <hr style={{ border: 'none', borderTop: '1px solid #333', margin: '6px 0 0' }} />
     </div>
   );
 
