@@ -1,22 +1,33 @@
+// medlist.js
+// The main "Your Medication List" page (shown to logged-in users).
+// It does three things:
+//   1. Loads the current user's medications from the API on first render.
+//   2. Shows them in a table (the imported Medtable component).
+//   3. Provides a form to add a new medication, and delete handling for removing one.
+// After any add or delete it re-fetches the list so the table stays up to date.
+
 import React from "react";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import Medtable from "./medtable";
+import { useState, useEffect } from "react"; // useState = local state; useEffect = run code after render (data loading).
+import axios from "axios"; // HTTP client used to call the REST API.
+import Medtable from "./medtable"; // Child component that renders the medications as a table.
 
 
 export default function MedList() {
 
-    const [ title, setTitle ] = useState('');
-    const [ morning, setMorning ] = useState(false);
-    const [ afternoon, setAfternoon ] = useState(false);
-    const [ evening, setEvening ] = useState(false);
-    const [ night, setNight ] = useState(false);
-    const [ as_needed, setAsNeeded] = useState(false);
+    // --- State for the "Add a Medication" form fields ---
+    const [ title, setTitle ] = useState('');              // The medication's name.
+    const [ morning, setMorning ] = useState(false);       // Checkbox: take in the morning?
+    const [ afternoon, setAfternoon ] = useState(false);   // Checkbox: take in the afternoon?
+    const [ evening, setEvening ] = useState(false);       // Checkbox: take in the evening?
+    const [ night, setNight ] = useState(false);           // Checkbox: take at night?
+    const [ as_needed, setAsNeeded] = useState(false);     // Checkbox: take as needed?
 
+    // Runs when the "Add Medication" form is submitted.
     const handlenewMedSubmit = async (event) => {
-        event.preventDefault();
+        event.preventDefault(); // Prevent the default page reload.
 
         try {
+            // Gather all form fields into one object to send to the server.
             const medicineData = {
                 title,
                 morning,
@@ -26,6 +37,7 @@ export default function MedList() {
                 as_needed,
             }
 
+            // POST the new medication to the saveMed endpoint.
             await axios.post(
                 "http://localhost:3001/api/users/saveMed",
                 medicineData
@@ -34,9 +46,10 @@ export default function MedList() {
             // refresh the table so the new medication shows up immediately
             await getUserData();
         } catch (err) {
-              console.error(err);
+              console.error(err); // Log any error for debugging.
             }
 
+        // Reset all the form fields back to empty/unchecked after submitting.
         setTitle('');
         setMorning(false);
         setAfternoon(false);
@@ -45,46 +58,56 @@ export default function MedList() {
         setAsNeeded(false);
     };
 
+    // Runs when a medication's "Remove" button is clicked (passed down to Medtable as onDelete).
+    // Receives the medication's title and deletes it.
     const handleDeleteMed = async (title) => {
         try {
+            // GET the deleteMed endpoint, passing the title as a URL query parameter (encoded for safety).
             await axios.get(
                 `http://localhost:3001/api/users/deleteMed?title=${encodeURIComponent(title)}`
             );
             // refresh the table so the removed medication disappears immediately
             await getUserData();
         } catch (err){
-            console.error(err)
+            console.error(err) // Log any error for debugging.
         }
     };
 
-    const [medications, setMedications] = React.useState([])
-    const [medlist, getMedList] = useState('');
+    const [medications, setMedications] = React.useState([]) // (Present but effectively unused for display.)
+    const [medlist, getMedList] = useState('');              // Holds the array of medications shown in the table.
 
+    // useEffect with an empty [] dependency array runs ONCE, right after the first render.
+    // Here it loads the user's medication data when the page first appears.
     useEffect(() => {
         getData()
         getUserData();
     }, [])
 
+    // Resets the "medications" state (note: called with no argument, so it sets it to undefined).
     const getData = async () => {
         setMedications()
     }
-    
+
+    // Fetches the logged-in user's saved medications from the API and stores them in "medlist".
         const getUserData = () => {
         return axios.get("http://localhost:3001/api/users/getSingleUser")
         .then((response) => {
-            const medlist = response.data.medList
-            console.log(medlist)
-            getMedList(medlist);
+            const medlist = response.data.medList // The user's medication array from the server.
+            console.log(medlist)                  // Log it for debugging.
+            getMedList(medlist);                  // Save it into state so the table re-renders.
         })
-        .catch(error => console.log(error));
+        .catch(error => console.log(error));      // Log any request error.
       }
 
+        // Helper that returns the "Add a Medication" form JSX.
         const renderForm = () => {
             return (
                     <>
                     <h3 className="mt-4 mb-4">Add a Medication to your List</h3>
 
+                        {/* This form runs handlenewMedSubmit when submitted */}
                         <form onSubmit={handlenewMedSubmit}>
+                            {/* Medication name text input -- updates the "title" state */}
                             <div className="form-group row">
                                 <label htmlFor="title" className="col-sm-2 col-form-label">Medication Name</label>
                                 <div className="col-sm-10">
@@ -95,28 +118,35 @@ export default function MedList() {
                                 <div className="col-sm-2">
                                     Schedule
                                 </div>
+                                {/* Schedule checkboxes: each toggles its own true/false state */}
                                 <div className="col-sm-10">
+                                    {/* Morning checkbox -- updates "morning" state */}
                                     <div className="form-check">
                                         <input type="checkbox" className="form-check-input" id="setMorning" checked={morning} onChange={(e) => setMorning(e.target.checked)} value={morning} />
                                         <label htmlFor="setMorning" className="form-check-label">Morning</label>
                                     </div>
-                                    <div className="form-check">   
+                                    {/* Afternoon checkbox -- updates "afternoon" state */}
+                                    <div className="form-check">
                                         <input type="checkbox" className="form-check-input" id="setAfternoon" checked={afternoon} onChange={(e) => setAfternoon(e.target.checked)} value={afternoon} />
                                         <label htmlFor="setAfternoon" className="form-check-label">Afternoon</label>
                                     </div>
+                                    {/* Evening checkbox -- updates "evening" state */}
                                     <div className="form-check">
                                         <input type="checkbox" className="form-check-input" id="setEvening" checked={evening} onChange={(e) => setEvening(e.target.checked)} value={evening} />
                                         <label htmlFor="setEvening" className="form-check-label">Evening</label>
                                     </div>
+                                    {/* Night checkbox -- updates "night" state */}
                                     <div className="form-check">
                                         <input type="checkbox"  className="form-check-input" id="setNight" checked={night} onChange={(e) => setNight(e.target.checked)} value={night} />
                                         <label htmlFor="inputEmail4" className="form-check-label">Night</label>
                                     </div>
+                                    {/* As Needed checkbox -- updates "as_needed" state */}
                                     <div className="form-check">
                                         <input type="checkbox" className="form-check-input" id="setAsNeeded" checked={as_needed} onChange={(e) => setAsNeeded(e.target.checked)} value={as_needed} />
                                         <label htmlFor="setAsNeeded" className="form-check-label">As Needed</label>
                                     </div>
                                 </div>
+                                {/* Submit button that triggers handlenewMedSubmit to save the medication */}
                                 <div className="form-group row">
                                     <div className="col-12">
                                         <button className="mt-3 btn btn-outline-info" type="submit">
@@ -132,12 +162,15 @@ export default function MedList() {
     return (
         <>
             <div className="container">
+                {/* Top section: the medication table. */}
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="mt-4 mb-4">Your Medication List</h1>
+                        {/* Medtable displays the meds; onDelete lets it call handleDeleteMed when Remove is clicked. */}
                         <Medtable medlist={medlist} onDelete={handleDeleteMed} />
                     </div>
                 </div>
+                {/* Bottom section: the "Add a Medication" form (built by renderForm above). */}
                 <div className="row">
                     <div className="col-md-12">
                         <hr />
