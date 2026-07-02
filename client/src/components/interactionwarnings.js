@@ -26,7 +26,7 @@ export default function InteractionWarnings({ interactions = [], loading = false
   if (!interactions.length) {
     return (
       <div className="alert alert-success" role="status">
-        No interactions found among your medications.{' '}
+        No interactions found.{' '}
         <small>(Informational only — not medical advice.)</small>
       </div>
     );
