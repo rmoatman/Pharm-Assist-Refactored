@@ -23,15 +23,19 @@ const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 const cell = { border: '1px solid #333', padding: '6px 10px', textAlign: 'left' };
 const centerCell = { ...cell, textAlign: 'center' };
 
-const PrintableMedList = React.forwardRef(({ meds = [], interactions = [] }, ref) => {
+const PrintableMedList = React.forwardRef(({ meds = [], interactions = [], firstName = '', lastName = '' }, ref) => {
   const list = Array.isArray(meds) ? meds : []; // medlist can start as '' before it loads
   const flagged = Array.isArray(interactions) ? interactions : [];
 
+  // Build "First L." from the logged-in user's name (last name shown as an initial).
+  const lastInitial = lastName ? `${lastName.charAt(0).toUpperCase()}.` : '';
+  const owner = `${firstName} ${lastInitial}`.trim();
+
   return (
     <div ref={ref} style={{ padding: '24px', color: '#000' }}>
-      <h2>Medication List</h2>
-      {/* Print date so the shared copy is dated. */}
-      <p>Printed: {new Date().toLocaleDateString()}</p>
+      <h2>Medication List{owner ? ` for ${owner}` : ''}</h2>
+      {/* Print date so the shared copy is dated (enlarged for readability). */}
+      <p style={{ fontSize: '1.3rem' }}>Printed: {new Date().toLocaleDateString()}</p>
 
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>

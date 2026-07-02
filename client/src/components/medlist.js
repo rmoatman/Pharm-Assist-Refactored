@@ -99,6 +99,8 @@ export default function MedList() {
     const [interactions, setInteractions] = useState([]);          // Flagged interaction pairs from the API.
     const [checkingInteractions, setCheckingInteractions] = useState(false); // True while the interaction check runs.
     const printRef = useRef();                                     // Points at the off-screen printable list for react-to-print.
+    const [firstName, setFirstName] = useState('');                // Logged-in user's first name (for the printout heading).
+    const [lastName, setLastName] = useState('');                  // Logged-in user's last name (for the printout heading).
 
     // useEffect with an empty [] dependency array runs ONCE, right after the first render.
     // Here it loads the user's medication data when the page first appears.
@@ -139,6 +141,8 @@ export default function MedList() {
             const medlist = response.data.medList // The user's medication array from the server.
             console.log(medlist)                  // Log it for debugging.
             getMedList(medlist);                  // Save it into state so the table re-renders.
+            setFirstName(response.data.firstName || ''); // Remember the user's name for the printout.
+            setLastName(response.data.lastName || '');
             checkMedInteractions(medlist);        // Re-check the updated list for interactions.
         })
         .catch(error => console.log(error));      // Log any request error.
@@ -232,7 +236,7 @@ export default function MedList() {
                         <Medtable medlist={medlist} onDelete={handleDeleteMed} onUpdate={handleUpdateMed} />
                         {/* Off-screen clean copy used only for printing (kept in the DOM so react-to-print can capture it). */}
                         <div style={{ position: "absolute", left: "-9999px", top: 0 }} aria-hidden="true">
-                            <PrintableMedList ref={printRef} meds={Array.isArray(medlist) ? medlist : []} interactions={interactions} />
+                            <PrintableMedList ref={printRef} meds={Array.isArray(medlist) ? medlist : []} interactions={interactions} firstName={firstName} lastName={lastName} />
                         </div>
                     </div>
                 </div>
