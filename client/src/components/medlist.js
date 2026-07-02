@@ -10,6 +10,7 @@ import React from "react";
 import { useState, useEffect } from "react"; // useState = local state; useEffect = run code after render (data loading).
 import axios from "axios"; // HTTP client used to call the REST API.
 import Medtable from "./medtable"; // Child component that renders the medications as a table.
+import InteractionWarnings from "./interactionwarnings"; // Shows any drug-interaction warnings for the list.
 
 
 export default function MedList() {
@@ -75,6 +76,8 @@ export default function MedList() {
 
     const [medications, setMedications] = React.useState([]) // (Present but effectively unused for display.)
     const [medlist, getMedList] = useState('');              // Holds the array of medications shown in the table.
+    const [interactions, setInteractions] = useState([]);          // Flagged interaction pairs from the API.
+    const [checkingInteractions, setCheckingInteractions] = useState(false); // True while the interaction check runs.
 
     // useEffect with an empty [] dependency array runs ONCE, right after the first render.
     // Here it loads the user's medication data when the page first appears.
@@ -88,6 +91,26 @@ export default function MedList() {
         setMedications()
     }
 
+    // Sends the current medication titles to the interaction checker and stores
+    // any flagged pairs. Needs at least two meds to have anything to compare.
+    const checkMedInteractions = async (meds) => {
+        const titles = (meds || []).map((m) => m.title).filter(Boolean);
+        if (titles.length < 2) {
+            setInteractions([]); // fewer than 2 meds -> nothing to flag
+            return;
+        }
+        try {
+            setCheckingInteractions(true);
+            const res = await axios.post("http://localhost:3001/api/interactions", { meds: titles });
+            setInteractions(res.data.interactions || []);
+        } catch (err) {
+            console.error(err);
+            setInteractions([]); // on error, don't show stale/false warnings
+        } finally {
+            setCheckingInteractions(false);
+        }
+    };
+
     // Fetches the logged-in user's saved medications from the API and stores them in "medlist".
         const getUserData = () => {
         return axios.get("http://localhost:3001/api/users/getSingleUser")
@@ -95,6 +118,7 @@ export default function MedList() {
             const medlist = response.data.medList // The user's medication array from the server.
             console.log(medlist)                  // Log it for debugging.
             getMedList(medlist);                  // Save it into state so the table re-renders.
+            checkMedInteractions(medlist);        // Re-check the updated list for interactions.
         })
         .catch(error => console.log(error));      // Log any request error.
       }
@@ -166,6 +190,8 @@ export default function MedList() {
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="mt-4 mb-4">Your Medication List</h1>
+                        {/* Interaction warnings for the current list (Phase 2). */}
+                        <InteractionWarnings interactions={interactions} loading={checkingInteractions} medCount={medlist.length} />
                         {/* Medtable displays the meds; onDelete lets it call handleDeleteMed when Remove is clicked. */}
                         <Medtable medlist={medlist} onDelete={handleDeleteMed} />
                     </div>
