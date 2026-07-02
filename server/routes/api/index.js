@@ -17,8 +17,8 @@ const userRoutes = require('./user-routes');
 const interactionRoutes = require('./interaction-routes');
 // Import the public pill-image lookup routes.
 const pillimageRoutes = require('./pillimage-routes');
-// Import the public pill text-description lookup routes.
-const pilldescriptionRoutes = require('./pilldescription-routes');
+// Import the public drug-info (use + appearance) lookup routes.
+const druginfoRoutes = require('./druginfo-routes');
 // Import the public medication-name autocomplete routes.
 const drugsuggestRoutes = require('./drugsuggest-routes');
 
@@ -34,8 +34,8 @@ router.use('/interactions', interactionRoutes);
 // (Currently unused by the client — kept for when a true pill-photo API is added.)
 router.use('/pillimage', pillimageRoutes);
 
-// Mount pill-description routes at "/pilldescription" -> "/api/pilldescription".
-router.use('/pilldescription', pilldescriptionRoutes);
+// Mount drug-info routes at "/druginfo" -> "/api/druginfo".
+router.use('/druginfo', druginfoRoutes);
 
 // Mount drug-suggestion routes at "/drugsuggest" -> "/api/drugsuggest".
 router.use('/drugsuggest', drugsuggestRoutes);

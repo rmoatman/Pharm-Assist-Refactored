@@ -102,7 +102,7 @@ export default function MedList() {
     const printRef = useRef();                                     // Points at the off-screen printable list for react-to-print.
     const [firstName, setFirstName] = useState('');                // Logged-in user's first name (for the printout heading).
     const [lastName, setLastName] = useState('');                  // Logged-in user's last name (for the printout heading).
-    const [descriptions, setDescriptions] = useState({});          // Map of med title -> text appearance description (or null).
+    const [info, setInfo] = useState({});                          // Map of med title -> { use, description } from the drug-info API.
 
     // useEffect with an empty [] dependency array runs ONCE, right after the first render.
     // Here it loads the user's medication data when the page first appears.
@@ -136,22 +136,22 @@ export default function MedList() {
         }
     };
 
-    // Looks up a text appearance description (color/shape/imprint) for each
-    // medication title and stores them as a { title: description } map.
+    // Looks up drug info (what it's used for + appearance description) for each
+    // medication title and stores them as a { title: { use, description } } map.
     // The server caches results, so repeat calls are cheap.
-    const fetchDescriptions = async (meds) => {
+    const fetchInfo = async (meds) => {
         const titles = [...new Set((meds || []).map((m) => m.title).filter(Boolean))];
         const entries = await Promise.all(
             titles.map(async (t) => {
                 try {
-                    const r = await axios.get(`http://localhost:3001/api/pilldescription?name=${encodeURIComponent(t)}`);
-                    return [t, r.data.description];
+                    const r = await axios.get(`http://localhost:3001/api/druginfo?name=${encodeURIComponent(t)}`);
+                    return [t, { use: r.data.use, description: r.data.description }];
                 } catch (err) {
-                    return [t, null];
+                    return [t, { use: null, description: null }];
                 }
             })
         );
-        setDescriptions(Object.fromEntries(entries));
+        setInfo(Object.fromEntries(entries));
     };
 
     // Fetches the logged-in user's saved medications from the API and stores them in "medlist".
@@ -164,7 +164,7 @@ export default function MedList() {
             setFirstName(response.data.firstName || ''); // Remember the user's name for the printout.
             setLastName(response.data.lastName || '');
             checkMedInteractions(medlist);        // Re-check the updated list for interactions.
-            fetchDescriptions(medlist);           // Look up a text description for each medication.
+            fetchInfo(medlist);                   // Look up use + description for each medication.
         })
         .catch(error => console.log(error));      // Log any request error.
       }
@@ -254,7 +254,7 @@ export default function MedList() {
                         {/* Interaction warnings for the current list (Phase 2). */}
                         <InteractionWarnings interactions={interactions} loading={checkingInteractions} medCount={medlist.length} />
                         {/* Medtable displays the meds; onDelete/onUpdate let it remove or edit-schedule a med. */}
-                        <Medtable medlist={medlist} onDelete={handleDeleteMed} onUpdate={handleUpdateMed} descriptions={descriptions} />
+                        <Medtable medlist={medlist} onDelete={handleDeleteMed} onUpdate={handleUpdateMed} info={info} />
                         {/* Off-screen clean copy used only for printing (kept in the DOM so react-to-print can capture it). */}
                         <div style={{ position: "absolute", left: "-9999px", top: 0 }} aria-hidden="true">
                             <PrintableMedList ref={printRef} meds={Array.isArray(medlist) ? medlist : []} interactions={interactions} firstName={firstName} lastName={lastName} />

@@ -14,7 +14,7 @@ import { goodRxUrl, singleCareUrl } from '../utils/discounts'; // Links to presc
 const SCHEDULE_FIELDS = ['morning', 'afternoon', 'evening', 'night', 'weekly', 'as_needed'];
 
 export default function MedTable(props) {
-    const { medlist, onDelete, onUpdate, descriptions = {} } = props;
+    const { medlist, onDelete, onUpdate, info = {} } = props;
 
     // Which medication row is currently being edited (its _id), or null if none.
     const [editingId, setEditingId] = useState(null);
@@ -81,12 +81,19 @@ export default function MedTable(props) {
 
             return (
                 <tr key={med._id}>
-                    {/* Medication name, plus a short appearance description when available. */}
+                    {/* Medication name, what it's used for, then a spaced-out appearance description. */}
                     <td>
                         {med.title}
-                        {descriptions[med.title] && (
-                            <div style={{ fontSize: '0.8em', color: '#555', marginTop: '2px' }}>
-                                {descriptions[med.title]}
+                        {/* What the medication is used for (directly under the name). */}
+                        {info[med.title]?.use && (
+                            <div style={{ fontSize: '0.85em', color: '#333', marginTop: '2px' }}>
+                                {info[med.title].use}
+                            </div>
+                        )}
+                        {/* Appearance description, with a blank space above it. */}
+                        {info[med.title]?.description && (
+                            <div style={{ fontSize: '0.8em', color: '#555', marginTop: '10px' }}>
+                                {info[med.title].description}
                             </div>
                         )}
                         {/* Links to check prescription discounts for this medication. */}
