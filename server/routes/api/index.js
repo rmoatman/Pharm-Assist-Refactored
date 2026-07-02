@@ -19,6 +19,8 @@ const interactionRoutes = require('./interaction-routes');
 const pillimageRoutes = require('./pillimage-routes');
 // Import the public pill text-description lookup routes.
 const pilldescriptionRoutes = require('./pilldescription-routes');
+// Import the public medication-name autocomplete routes.
+const drugsuggestRoutes = require('./drugsuggest-routes');
 
 
 // Mount user routes at "/users". Combined with the "/api" prefix from
@@ -34,6 +36,9 @@ router.use('/pillimage', pillimageRoutes);
 
 // Mount pill-description routes at "/pilldescription" -> "/api/pilldescription".
 router.use('/pilldescription', pilldescriptionRoutes);
+
+// Mount drug-suggestion routes at "/drugsuggest" -> "/api/drugsuggest".
+router.use('/drugsuggest', drugsuggestRoutes);
 
 // Export this API router so the parent router can attach it.
 module.exports = router;

@@ -62,6 +62,7 @@ export default function MedList() {
         setNight(false);
         setWeekly(false);
         setAsNeeded(false);
+        setSuggestions([]);
     };
 
     // Runs when a medication's "Remove" button is clicked (passed down to Medtable as onDelete).
@@ -102,6 +103,8 @@ export default function MedList() {
     const [firstName, setFirstName] = useState('');                // Logged-in user's first name (for the printout heading).
     const [lastName, setLastName] = useState('');                  // Logged-in user's last name (for the printout heading).
     const [descriptions, setDescriptions] = useState({});          // Map of med title -> text appearance description (or null).
+    const [suggestions, setSuggestions] = useState([]);            // Autocomplete suggestions for the medication name field.
+    const suggestTimer = useRef();                                 // Debounce timer so we don't fetch on every keystroke.
 
     // useEffect with an empty [] dependency array runs ONCE, right after the first render.
     // Here it loads the user's medication data when the page first appears.
@@ -168,6 +171,27 @@ export default function MedList() {
         .catch(error => console.log(error));      // Log any request error.
       }
 
+    // Fetch medication-name suggestions as the user types (debounced 300ms).
+    const onTitleChange = (value) => {
+        setTitle(value);
+        clearTimeout(suggestTimer.current);
+        if (value.trim().length < 3) { setSuggestions([]); return; }
+        suggestTimer.current = setTimeout(async () => {
+            try {
+                const r = await axios.get(`http://localhost:3001/api/drugsuggest?q=${encodeURIComponent(value.trim())}`);
+                setSuggestions(r.data.suggestions || []);
+            } catch (err) {
+                setSuggestions([]);
+            }
+        }, 300);
+    };
+
+    // When a suggestion is clicked, fill the field with it and close the dropdown.
+    const pickSuggestion = (s) => {
+        setTitle(s);
+        setSuggestions([]);
+    };
+
         // Helper that returns the "Add a Medication" form JSX.
         const renderForm = () => {
             return (
@@ -179,8 +203,23 @@ export default function MedList() {
                             {/* Medication name text input -- updates the "title" state */}
                             <div className="form-group row">
                                 <label htmlFor="title" className="col-sm-2 col-form-label">Medication Name</label>
-                                <div className="col-sm-10">
-                                    <input type="text" className="form-control" id="title" placeholder="Medication Name" onChange={(e) => setTitle(e.target.value)} value={title} />
+                                <div className="col-sm-10" style={{ position: 'relative' }}>
+                                    <input type="text" className="form-control" id="title" placeholder="Start typing, e.g. warfarin" autoComplete="off" onChange={(e) => onTitleChange(e.target.value)} value={title} />
+                                    {/* Autocomplete dropdown of name + strength suggestions. */}
+                                    {suggestions.length > 0 && (
+                                        <ul className="list-group" style={{ position: 'absolute', zIndex: 20, width: '100%', maxHeight: '220px', overflowY: 'auto' }}>
+                                            {suggestions.map((s, i) => (
+                                                <li
+                                                    key={i}
+                                                    className="list-group-item list-group-item-action"
+                                                    style={{ cursor: 'pointer' }}
+                                                    onMouseDown={() => pickSuggestion(s)}
+                                                >
+                                                    {s}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </div>
                             </div>
                             <div className="form-group row">
