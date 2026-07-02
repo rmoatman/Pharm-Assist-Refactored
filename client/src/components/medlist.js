@@ -332,7 +332,7 @@ export default function MedList() {
                                     documentTitle="Medication List"
                                 />
                                 {/* Opens the mail app with the list pre-filled to the email on file. */}
-                                <button type="button" className="btn mb-3" style={{ marginLeft: '0.3in', verticalAlign: 'middle', backgroundColor: '#fff', color: '#212529', border: '1px solid #ced4da' }} onClick={emailMedList}>
+                                <button type="button" className="btn mb-3" style={{ marginLeft: '0.3in', verticalAlign: 'middle', backgroundColor: '#fff', color: '#212529', border: '1px solid #000' }} onClick={emailMedList}>
                                     Email My List
                                 </button>
                                 {/* Which email service the button opens. */}

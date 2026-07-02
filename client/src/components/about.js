@@ -171,10 +171,10 @@ export default function About() {
             {/* Spacer matching the other section's second input, so the buttons line up. */}
             <div className="mb-3" style={{ height: '38px' }} aria-hidden="true"></div>
             {/* Two side-by-side buttons that open the drug's price page on each site. */}
-            <div className="mb-2 mt-2">
+            <div>
               <button
                 type="button"
-                className="btn btn-outline-info"
+                className="btn btn-outline-info mb-2 mt-2"
                 disabled={!priceDrug.trim()}
                 onClick={() => window.open(goodRxUrl(priceDrug), '_blank', 'noopener')}
               >
@@ -182,7 +182,7 @@ export default function About() {
               </button>
               <button
                 type="button"
-                className="btn btn-outline-info"
+                className="btn btn-outline-info mb-2 mt-2"
                 style={{ marginLeft: '0.3in' }}
                 disabled={!priceDrug.trim()}
                 onClick={() => window.open(singleCareUrl(priceDrug), '_blank', 'noopener')}
