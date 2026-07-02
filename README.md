@@ -56,8 +56,8 @@ Pharm-Assist is an app designed to assist users in managing their medications. P
 ### Install
 Clone the repository and install dependencies for both the server and the client:
 ~~~bash
-gh repo clone rmoatman/pharm-assist
-cd pharm-assist
+gh repo clone rmoatman/Pharm-Assist-Refactored
+cd Pharm-Assist-Refactored
 npm install        # installs root, then server, then client dependencies
 ~~~
 
