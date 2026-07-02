@@ -15,6 +15,8 @@ const router = require('express').Router();
 const userRoutes = require('./user-routes');
 // Import the public drug-interaction checker routes.
 const interactionRoutes = require('./interaction-routes');
+// Import the public pill-image lookup routes.
+const pillimageRoutes = require('./pillimage-routes');
 
 
 // Mount user routes at "/users". Combined with the "/api" prefix from
@@ -23,6 +25,9 @@ router.use('/users', userRoutes);
 
 // Mount interaction routes at "/interactions" -> "/api/interactions".
 router.use('/interactions', interactionRoutes);
+
+// Mount pill-image routes at "/pillimage" -> "/api/pillimage".
+router.use('/pillimage', pillimageRoutes);
 
 // Export this API router so the parent router can attach it.
 module.exports = router;

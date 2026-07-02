@@ -13,7 +13,7 @@ import React, { useState } from 'react';
 const SCHEDULE_FIELDS = ['morning', 'afternoon', 'evening', 'night', 'weekly', 'as_needed'];
 
 export default function MedTable(props) {
-    const { medlist, onDelete, onUpdate } = props;
+    const { medlist, onDelete, onUpdate, images = {} } = props;
 
     // Which medication row is currently being edited (its _id), or null if none.
     const [editingId, setEditingId] = useState(null);
@@ -80,8 +80,17 @@ export default function MedTable(props) {
 
             return (
                 <tr key={med._id}>
-                    {/* Medication name */}
-                    <td>{med.title}</td>
+                    {/* Medication name, plus a pill image thumbnail when one is available. */}
+                    <td>
+                        {med.title}
+                        {images[med.title] && (
+                            <img
+                                src={images[med.title]}
+                                alt={`${med.title} pill`}
+                                style={{ height: '40px', marginLeft: '8px', verticalAlign: 'middle' }}
+                            />
+                        )}
+                    </td>
                     {/* The five schedule checkboxes */}
                     {SCHEDULE_FIELDS.map((field) => (
                         <React.Fragment key={field}>{scheduleCell(field)}</React.Fragment>
