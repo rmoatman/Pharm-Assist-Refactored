@@ -24,7 +24,6 @@ export default function About() {
   const [loading, setLoading] = useState(false);        // True while the check is running.
   const [checked, setChecked] = useState(false);        // True once a check has completed (so we show a result).
   const [priceDrug, setPriceDrug] = useState("");       // Medication name typed into the price-check box.
-  const [showDiscounts, setShowDiscounts] = useState(false); // True once "Search for Discounts!" is clicked.
 
   // Create event handler for Compare Button
   // Runs when the "Compare" form is submitted. Posts the two medication names to
@@ -171,20 +170,26 @@ export default function About() {
             </div>
             {/* Spacer matching the other section's second input, so the buttons line up. */}
             <div className="mb-3" style={{ height: '38px' }} aria-hidden="true"></div>
-            <button type="button" className="btn btn-outline-info mb-2 mt-2" onClick={() => setShowDiscounts(true)}>
-              Search for Discounts!
-            </button>
-            {/* After clicking, show links that each open that drug's price page. */}
-            {showDiscounts && priceDrug.trim() && (
-              <div className="mt-3">
-                <a className="btn btn-outline-success me-2" href={goodRxUrl(priceDrug)} target="_blank" rel="noopener noreferrer">
-                  GoodRx
-                </a>
-                <a className="btn btn-outline-success" href={singleCareUrl(priceDrug)} target="_blank" rel="noopener noreferrer">
-                  SingleCare
-                </a>
-              </div>
-            )}
+            {/* Two side-by-side buttons that open the drug's price page on each site. */}
+            <div className="mb-2 mt-2">
+              <button
+                type="button"
+                className="btn btn-outline-info"
+                disabled={!priceDrug.trim()}
+                onClick={() => window.open(goodRxUrl(priceDrug), '_blank', 'noopener')}
+              >
+                Search for Discounts on GoodRX!
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-info"
+                style={{ marginLeft: '0.3in' }}
+                disabled={!priceDrug.trim()}
+                onClick={() => window.open(singleCareUrl(priceDrug), '_blank', 'noopener')}
+              >
+                Search for Discounts on SingleCare!
+              </button>
+            </div>
           </div>
 
         </div>
