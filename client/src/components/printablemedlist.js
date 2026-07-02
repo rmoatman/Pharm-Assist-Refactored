@@ -39,7 +39,7 @@ const PrintableMedList = React.forwardRef(({ meds = [], interactions = [], first
   // A borderless mini-table for one time-of-day group. Each row has a checkbox
   // the user can tick on paper, and a line is drawn across the page below it.
   const renderGroup = ({ label, meds }) => (
-    <div key={label} style={{ marginBottom: '10px', pageBreakInside: 'avoid', breakInside: 'avoid' }}>
+    <div key={label} style={{ marginBottom: '28px', pageBreakInside: 'avoid', breakInside: 'avoid' }}>
       <h3 style={{ margin: '0 0 4px' }}>{label}</h3>
       <table style={{ borderCollapse: 'collapse' }}>
         <tbody>
