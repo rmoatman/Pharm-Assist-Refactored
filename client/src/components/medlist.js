@@ -324,7 +324,7 @@ export default function MedList() {
                                 {/* Print / Save-as-PDF button: prints the off-screen PrintableMedList below. */}
                                 <ReactToPrint
                                     trigger={() => (
-                                        <button type="button" className="btn btn-outline-secondary mb-3">
+                                        <button type="button" className="btn btn-outline-secondary mb-3" style={{ verticalAlign: 'middle' }}>
                                             Print / Save as PDF
                                         </button>
                                     )}
@@ -332,12 +332,13 @@ export default function MedList() {
                                     documentTitle="Medication List"
                                 />
                                 {/* Opens the mail app with the list pre-filled to the email on file. */}
-                                <button type="button" className="btn btn-outline-secondary mb-3" style={{ marginLeft: '0.3in' }} onClick={emailMedList}>
+                                <button type="button" className="btn btn-outline-secondary mb-3" style={{ marginLeft: '0.3in', verticalAlign: 'middle' }} onClick={emailMedList}>
                                     Email My List
                                 </button>
                                 {/* Which email service the button opens. */}
                                 <select
-                                    className="form-select d-inline-block w-auto mb-3 ms-2"
+                                    className="form-select d-inline-block w-auto mb-3"
+                                    style={{ marginLeft: '0.15in', height: 'calc(1.5em + 0.75rem + 2px)', verticalAlign: 'middle' }}
                                     value={emailProvider}
                                     onChange={(e) => setEmailProvider(e.target.value)}
                                     aria-label="Email provider"
