@@ -210,11 +210,14 @@ export default function MedList() {
         return lines.join('\r\n');
     };
 
-    // Opens the user's email app with the list pre-filled, addressed to the email on file.
+    // Opens Gmail's compose window (in a new tab) with the list pre-filled and
+    // addressed to the email on file. Using Gmail directly avoids relying on the
+    // computer having a default mail app registered for mailto: links.
     const emailMedList = () => {
         const subject = 'My Medication List';
         const body = buildEmailListText();
-        window.location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.open(url, '_blank', 'noopener');
     };
 
         // Helper that returns the "Add a Medication" form JSX.
