@@ -330,7 +330,7 @@ export default function MedList() {
                         {/* Sort control for the on-screen list (shown when there's more than one med). */}
                         {Array.isArray(medlist) && medlist.length > 1 && (
                             <div className="mb-2">
-                                <label htmlFor="sortBy" className="me-3">Sort by:</label>
+                                <label htmlFor="sortBy" style={{ marginRight: '0.15in' }}>Sort by:</label>
                                 <select
                                     id="sortBy"
                                     className="form-select d-inline-block w-auto"
