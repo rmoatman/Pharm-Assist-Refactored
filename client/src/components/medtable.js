@@ -179,13 +179,17 @@ export default function MedTable(props) {
     };
 
     return (
-        <table className="table table-striped">
-            <thead>
-                <tr>{renderHeader()}</tr>
-            </thead>
-            <tbody>
-                {displayMeds()}
-            </tbody>
-        </table>
+        // table-responsive keeps the wide table within the container width (scrolls
+        // horizontally if needed) so it lines up with the rest of the page.
+        <div className="table-responsive">
+            <table className="table table-striped">
+                <thead>
+                    <tr>{renderHeader()}</tr>
+                </thead>
+                <tbody>
+                    {displayMeds()}
+                </tbody>
+            </table>
+        </div>
     );
 }

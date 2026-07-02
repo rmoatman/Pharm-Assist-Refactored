@@ -178,17 +178,17 @@ export default function MedList() {
                         {/* This form runs handlenewMedSubmit when submitted */}
                         <form onSubmit={handlenewMedSubmit}>
                             {/* Medication name text input -- updates the "title" state */}
-                            <div className="form-group row">
+                            <div className="form-group row mb-3">
                                 <label htmlFor="title" className="col-sm-2 col-form-label">Medication Name</label>
                                 <div className="col-sm-10">
                                     <MedNameInput id="title" placeholder="Start typing, e.g. warfarin" value={title} onChange={setTitle} />
                                 </div>
                             </div>
-                            <div className="form-group row">
+                            {/* Schedule checkboxes: each toggles its own true/false state */}
+                            <div className="form-group row mb-3">
                                 <div className="col-sm-2">
                                     Schedule
                                 </div>
-                                {/* Schedule checkboxes: each toggles its own true/false state */}
                                 <div className="col-sm-10">
                                     {/* Morning checkbox -- updates "morning" state */}
                                     <div className="form-check">
@@ -221,13 +221,13 @@ export default function MedList() {
                                         <label htmlFor="setAsNeeded" className="form-check-label">As Needed</label>
                                     </div>
                                 </div>
-                                {/* Submit button that triggers handlenewMedSubmit to save the medication */}
-                                <div className="form-group row">
-                                    <div className="col-12">
-                                        <button className="mt-3 btn btn-outline-info" type="submit">
-                                            Add Medication
-                                        </button>
-                                    </div>
+                            </div>
+                            {/* Submit button (its own row) that triggers handlenewMedSubmit to save the medication */}
+                            <div className="row">
+                                <div className="col-12">
+                                    <button className="btn btn-outline-info" type="submit">
+                                        Add Medication
+                                    </button>
                                 </div>
                             </div>
                         </form>
