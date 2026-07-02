@@ -11,6 +11,7 @@ import { Form } from "react-bootstrap"; // Pre-styled Bootstrap form components.
 import axios from "axios"; // HTTP client used to call our interaction API.
 import InteractionWarnings from "./interactionwarnings"; // Shared component that displays the interaction result.
 import { goodRxUrl, singleCareUrl } from "../utils/discounts"; // Links to prescription-discount sites.
+import MedNameInput from "./mednameinput"; // Reusable medication-name autocomplete input.
 
 // Called from src/app.js
 export default function About() {
@@ -110,14 +111,11 @@ export default function About() {
 
                 <Form.Label htmlFor="medicationOne"></Form.Label>
 
-                <Form.Control
-                  type="text"
+                <MedNameInput
+                  id="medicationOne"
                   placeholder="Medication 1"
-                  name="medicationOne"
-                  onChange={(e) => {
-                    setMedicationOne(e.target.value);
-                  }}
                   value={medicationOne}
+                  onChange={setMedicationOne}
                   required
                 />
 
@@ -128,14 +126,11 @@ export default function About() {
               <Form.Group>
                 <Form.Label htmlFor="medicationTwo"></Form.Label>
 
-                <Form.Control
-                  type="text"
+                <MedNameInput
+                  id="medicationTwo"
                   placeholder="Medication 2"
-                  name="medicationTwo"
-                  onChange={(e) => {
-                    setMedicationTwo(e.target.value);
-                  }}
                   value={medicationTwo}
+                  onChange={setMedicationTwo}
                   required
                 />
 
@@ -163,13 +158,13 @@ export default function About() {
           <div className="col-md-6 pt-5">
             <h3>Check Prescription Prices</h3>
             <p>Look up discount prices for a medication — no account needed.</p>
-            <input
-              type="text"
-              className="form-control mb-2"
-              placeholder="Medication name (e.g. lisinopril)"
-              value={priceDrug}
-              onChange={(e) => setPriceDrug(e.target.value)}
-            />
+            <div className="mb-2">
+              <MedNameInput
+                placeholder="Medication name (e.g. lisinopril)"
+                value={priceDrug}
+                onChange={setPriceDrug}
+              />
+            </div>
             {/* Links appear once a name is entered; each opens that drug's price page. */}
             {priceDrug.trim() && (
               <div>
