@@ -1,13 +1,15 @@
 // printablemedlist.js
-// A clean, print-friendly version of the medication list (no buttons/checkboxes
-// you can click), meant to be printed or saved as a PDF and shared with a
-// provider. It is rendered off-screen in MedList and captured by react-to-print.
-// It uses React.forwardRef so the print library can grab its underlying DOM node.
+// A clean, print-friendly version of the medication list, meant to be printed or
+// saved as a PDF and shared with a provider. Instead of one big grid, the meds
+// are grouped into a small table PER TIME OF DAY (Morning, Afternoon, ...), so
+// the printout reads like a daily schedule. A medication taken at more than one
+// time appears in each of those groups. Rendered off-screen in MedList and
+// captured by react-to-print (via React.forwardRef).
 
 import React from 'react';
 
-// Column definitions: [med field, human label].
-const SCHEDULE = [
+// Each schedule field and its heading, in the order they should print.
+const GROUPS = [
   ['morning', 'Morning'],
   ['afternoon', 'Afternoon'],
   ['evening', 'Evening'],
@@ -16,12 +18,8 @@ const SCHEDULE = [
   ['as_needed', 'As needed'],
 ];
 
-// Capitalize the first letter for nicer display.
 const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
-
-// Inline styles so the printout looks tidy without depending on app CSS.
 const cell = { border: '1px solid #333', padding: '6px 10px', textAlign: 'left' };
-const centerCell = { ...cell, textAlign: 'center' };
 
 const PrintableMedList = React.forwardRef(({ meds = [], interactions = [], firstName = '', lastName = '' }, ref) => {
   const list = Array.isArray(meds) ? meds : []; // medlist can start as '' before it loads
@@ -31,36 +29,36 @@ const PrintableMedList = React.forwardRef(({ meds = [], interactions = [], first
   const lastInitial = lastName ? `${lastName.charAt(0).toUpperCase()}.` : '';
   const owner = `${firstName} ${lastInitial}`.trim();
 
+  // One group per time of day, plus a catch-all for meds with no time set so
+  // nothing is dropped from the printout.
+  const groups = GROUPS.map(([field, label]) => ({ label, meds: list.filter((m) => m[field]) }));
+  const unscheduled = list.filter((m) => GROUPS.every(([field]) => !m[field]));
+  if (unscheduled.length) groups.push({ label: 'Not scheduled', meds: unscheduled });
+
+  // A mini-table of medication names for one time-of-day group.
+  const renderGroup = ({ label, meds }) => (
+    <div key={label} style={{ marginBottom: '14px', pageBreakInside: 'avoid', breakInside: 'avoid' }}>
+      <h3 style={{ margin: '0 0 4px' }}>{label}</h3>
+      <table style={{ borderCollapse: 'collapse' }}>
+        <tbody>
+          {meds.map((m) => (
+            <tr key={m._id}><td style={cell}>{m.title}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
   return (
     <div ref={ref} style={{ padding: '24px', color: '#000' }}>
       <h2>Medication List{owner ? ` for ${owner}` : ''}</h2>
       {/* Print date so the shared copy is dated (enlarged for readability). */}
       <p style={{ fontSize: '1.3rem' }}>Printed: {new Date().toLocaleDateString()}</p>
 
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th style={cell}>Medication</th>
-            {SCHEDULE.map(([, label]) => (
-              <th key={label} style={centerCell}>{label}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {list.length === 0 ? (
-            <tr><td style={cell} colSpan={7}>No medications.</td></tr>
-          ) : (
-            list.map((med) => (
-              <tr key={med._id}>
-                <td style={cell}>{med.title}</td>
-                {SCHEDULE.map(([field, label]) => (
-                  <td key={label} style={centerCell}>{med[field] ? '✓' : ''}</td>
-                ))}
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+      {/* One mini-table per non-empty time-of-day group. */}
+      {list.length === 0
+        ? <p>No medications.</p>
+        : groups.filter((g) => g.meds.length > 0).map(renderGroup)}
 
       {/* Interaction note: only printed when the check found possible interactions. */}
       {flagged.length > 0 && (
