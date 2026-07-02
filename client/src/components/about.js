@@ -104,8 +104,11 @@ export default function About() {
           {/* div Holding Two Medication Input Fields */}
           <div className="col-md-6 pt-5">
 
-            <h3>Check Interactions between Medications</h3>
-            <p>Enter two medications to see if they may interact — no account needed.</p>
+            {/* Equal-height header so the first input lines up with the other section. */}
+            <div style={{ minHeight: '90px' }}>
+              <h3>Check Drug Interactions</h3>
+              <p>Enter two medications to check for interactions.</p>
+            </div>
 
 {/* handleFormSubmit is defined above -- it runs the interaction check when this form is submitted */}
             {/* Medication to Compare Form */}
@@ -154,8 +157,11 @@ export default function About() {
 
           {/* Prescription price check — public, no sign-in needed. */}
           <div className="col-md-6 pt-5">
-            <h3>Check Prescription Prices</h3>
-            <p>Look up discount prices for a medication — no account needed.</p>
+            {/* Equal-height header so the input lines up with the other section. */}
+            <div style={{ minHeight: '90px' }}>
+              <h3>Check Prescription Prices</h3>
+              <p>Enter a medication to find discount prices.</p>
+            </div>
             <div className="mb-3">
               <MedNameInput
                 placeholder="Medication name (e.g. lisinopril)"
@@ -163,6 +169,8 @@ export default function About() {
                 onChange={setPriceDrug}
               />
             </div>
+            {/* Spacer matching the other section's second input, so the buttons line up. */}
+            <div className="mb-3" style={{ height: '38px' }} aria-hidden="true"></div>
             <button type="button" className="btn btn-outline-info mb-2 mt-2" onClick={() => setShowDiscounts(true)}>
               Search for Discounts!
             </button>

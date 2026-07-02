@@ -55,7 +55,7 @@ const handleFormSubmit = async (event) => {
   }
 
   return (
-    <nav className="navbar navbar-expand-lg App-header">
+    <nav className="navbar navbar-expand-lg App-header align-items-end">
       {/* Brand link on the left -- clicking it returns to the home page */}
       <Link className="navbar-brand" to="/" style={{ fontSize: '2.5rem' }}><strong>Pharm-Assist</strong></Link>
       {/* Hamburger toggle button (Bootstrap) shown on small screens to expand/collapse the menu */}
@@ -92,12 +92,12 @@ const handleFormSubmit = async (event) => {
 		  {/* Password input -- updates the "password" state */}
 		  <input type="password" className="form-control" id="inputPassword4" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password}/>
 
-            <button className="btn btn-outline-success" type="submit" >Login</button>
+            <button className="btn btn-success" type="submit" >Login</button>
           </form>
           )}
           {/* When logged IN: show a Log Out button that runs handleLogOut */}
           {loggedIn === true && (
-          <button onClick={handleLogOut} className="btn btn-outline-success" type="submit">Log Out</button>
+          <button onClick={handleLogOut} className="btn btn-success" type="submit">Log Out</button>
           )}
         </div>
       </nav>
