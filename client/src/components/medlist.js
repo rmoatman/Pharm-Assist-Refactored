@@ -15,6 +15,15 @@ import InteractionWarnings from "./interactionwarnings"; // Shows any drug-inter
 import PrintableMedList from "./printablemedlist"; // Clean print-only version of the list.
 import MedNameInput from "./mednameinput"; // Reusable medication-name autocomplete input.
 
+// Schedule groups used when building the plain-text list for the email.
+const EMAIL_GROUPS = [
+  ['morning', 'Morning'],
+  ['afternoon', 'Afternoon'],
+  ['night', 'Night'],
+  ['weekly', 'Weekly'],
+  ['as_needed', 'As needed'],
+];
+
 
 export default function MedList() {
 
@@ -99,6 +108,7 @@ export default function MedList() {
     const printRef = useRef();                                     // Points at the off-screen printable list for react-to-print.
     const [firstName, setFirstName] = useState('');                // Logged-in user's first name (for the printout heading).
     const [lastName, setLastName] = useState('');                  // Logged-in user's last name (for the printout heading).
+    const [email, setEmail] = useState('');                        // Logged-in user's email on file (for the Email button).
     const [info, setInfo] = useState({});                          // Map of med title -> { use, description } from the drug-info API.
 
     // useEffect with an empty [] dependency array runs ONCE, right after the first render.
@@ -160,11 +170,48 @@ export default function MedList() {
             getMedList(medlist);                  // Save it into state so the table re-renders.
             setFirstName(response.data.firstName || ''); // Remember the user's name for the printout.
             setLastName(response.data.lastName || '');
+            setEmail(response.data.email || '');         // Remember the email on file for the Email button.
             checkMedInteractions(medlist);        // Re-check the updated list for interactions.
             fetchInfo(medlist);                   // Look up use + description for each medication.
         })
         .catch(error => console.log(error));      // Log any request error.
       }
+
+    // Builds the medication list as plain text (grouped by time of day) for the email body.
+    const buildEmailListText = () => {
+        const list = Array.isArray(medlist) ? medlist : [];
+        const lastInitial = lastName ? `${lastName.charAt(0).toUpperCase()}.` : '';
+        const owner = `${firstName} ${lastInitial}`.trim();
+
+        const lines = [];
+        lines.push(`Medication List${owner ? ` for ${owner}` : ''}`);
+        lines.push(`Generated: ${new Date().toLocaleDateString()}`);
+        lines.push('');
+
+        const groups = EMAIL_GROUPS.map(([field, label]) => [label, list.filter((m) => m[field])]);
+        const unscheduled = list.filter((m) => EMAIL_GROUPS.every(([field]) => !m[field]));
+        if (unscheduled.length) groups.push(['Not scheduled', unscheduled]);
+
+        let any = false;
+        groups.forEach(([label, meds]) => {
+            if (!meds.length) return;
+            any = true;
+            lines.push(label.toUpperCase());
+            meds.forEach((m) => lines.push(`- ${m.title}`));
+            lines.push('');
+        });
+        if (!any) lines.push('No medications.');
+
+        lines.push('Informational only — not medical advice. Please review with a healthcare professional or pharmacist.');
+        return lines.join('\r\n');
+    };
+
+    // Opens the user's email app with the list pre-filled, addressed to the email on file.
+    const emailMedList = () => {
+        const subject = 'My Medication List';
+        const body = buildEmailListText();
+        window.location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    };
 
         // Helper that returns the "Add a Medication" form JSX.
         const renderForm = () => {
@@ -233,18 +280,24 @@ export default function MedList() {
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="mt-4 mb-4">Your Medication List</h1>
-                        {/* Print button on the left, "Add a Medication" button on the right. */}
+                        {/* Print + Email buttons on the left, "Add a Medication" button on the right. */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            {/* Print / Save-as-PDF button: prints the off-screen PrintableMedList below. */}
-                            <ReactToPrint
-                                trigger={() => (
-                                    <button type="button" className="btn btn-outline-secondary mb-3">
-                                        Print / Save as PDF
-                                    </button>
-                                )}
-                                content={() => printRef.current}
-                                documentTitle="Medication List"
-                            />
+                            <div>
+                                {/* Print / Save-as-PDF button: prints the off-screen PrintableMedList below. */}
+                                <ReactToPrint
+                                    trigger={() => (
+                                        <button type="button" className="btn btn-outline-secondary mb-3">
+                                            Print / Save as PDF
+                                        </button>
+                                    )}
+                                    content={() => printRef.current}
+                                    documentTitle="Medication List"
+                                />
+                                {/* Opens the mail app with the list pre-filled to the email on file. */}
+                                <button type="button" className="btn btn-outline-secondary mb-3 ms-2" onClick={emailMedList}>
+                                    Email My List
+                                </button>
+                            </div>
                             {/* Right-aligned: smooth-scrolls down to the Add a Medication section. */}
                             <button
                                 type="button"
