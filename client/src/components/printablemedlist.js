@@ -19,7 +19,8 @@ const GROUPS = [
 ];
 
 const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
-const cell = { border: '1px solid #333', padding: '6px 10px', textAlign: 'left' };
+// Borderless cell — the mini-tables show no grid lines.
+const cell = { border: 'none', padding: '2px 6px', textAlign: 'left', verticalAlign: 'middle' };
 
 const PrintableMedList = React.forwardRef(({ meds = [], interactions = [], firstName = '', lastName = '' }, ref) => {
   const list = Array.isArray(meds) ? meds : []; // medlist can start as '' before it loads
@@ -35,17 +36,25 @@ const PrintableMedList = React.forwardRef(({ meds = [], interactions = [], first
   const unscheduled = list.filter((m) => GROUPS.every(([field]) => !m[field]));
   if (unscheduled.length) groups.push({ label: 'Not scheduled', meds: unscheduled });
 
-  // A mini-table of medication names for one time-of-day group.
+  // A borderless mini-table for one time-of-day group. Each row has a checkbox
+  // the user can tick on paper, and a line is drawn across the page below it.
   const renderGroup = ({ label, meds }) => (
-    <div key={label} style={{ marginBottom: '14px', pageBreakInside: 'avoid', breakInside: 'avoid' }}>
+    <div key={label} style={{ marginBottom: '10px', pageBreakInside: 'avoid', breakInside: 'avoid' }}>
       <h3 style={{ margin: '0 0 4px' }}>{label}</h3>
       <table style={{ borderCollapse: 'collapse' }}>
         <tbody>
           {meds.map((m) => (
-            <tr key={m._id}><td style={cell}>{m.title}</td></tr>
+            <tr key={m._id}>
+              <td style={{ ...cell, width: '1%', whiteSpace: 'nowrap' }}>
+                <input type="checkbox" readOnly />
+              </td>
+              <td style={cell}>{m.title}</td>
+            </tr>
           ))}
         </tbody>
       </table>
+      {/* Line across the page under this category */}
+      <hr style={{ border: 'none', borderTop: '1px solid #333', margin: '6px 0 0' }} />
     </div>
   );
 
