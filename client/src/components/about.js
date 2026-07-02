@@ -178,7 +178,7 @@ export default function About() {
                 disabled={!priceDrug.trim()}
                 onClick={() => window.open(goodRxUrl(priceDrug), '_blank', 'noopener')}
               >
-                Search for Discounts on GoodRX!
+                Search GoodRX!
               </button>
               <button
                 type="button"
@@ -187,7 +187,7 @@ export default function About() {
                 disabled={!priceDrug.trim()}
                 onClick={() => window.open(singleCareUrl(priceDrug), '_blank', 'noopener')}
               >
-                Search for Discounts on SingleCare!
+                Search SingleCare!
               </button>
             </div>
           </div>
