@@ -175,8 +175,7 @@ export default function About() {
               <button
                 type="button"
                 className="btn btn-outline-info mb-2 mt-2"
-                disabled={!priceDrug.trim()}
-                onClick={() => window.open(goodRxUrl(priceDrug), '_blank', 'noopener')}
+                onClick={() => priceDrug.trim() && window.open(goodRxUrl(priceDrug), '_blank', 'noopener')}
               >
                 Search GoodRX!
               </button>
@@ -184,8 +183,7 @@ export default function About() {
                 type="button"
                 className="btn btn-outline-info mb-2 mt-2"
                 style={{ marginLeft: '0.3in' }}
-                disabled={!priceDrug.trim()}
-                onClick={() => window.open(singleCareUrl(priceDrug), '_blank', 'noopener')}
+                onClick={() => priceDrug.trim() && window.open(singleCareUrl(priceDrug), '_blank', 'noopener')}
               >
                 Search SingleCare!
               </button>
