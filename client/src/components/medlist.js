@@ -173,7 +173,7 @@ export default function MedList() {
         const renderForm = () => {
             return (
                     <>
-                    <h3 className="mt-4 mb-4">Add a Medication to your List</h3>
+                    <h3 className="mb-4">Add a Medication to your List</h3>
 
                         {/* This form runs handlenewMedSubmit when submitted */}
                         <form onSubmit={handlenewMedSubmit}>
@@ -276,7 +276,7 @@ export default function MedList() {
                     extra space above it (and the scroll target for the "Add a Medication" button). */}
                 <div className="row">
                     <div className="col-md-12">
-                        <div id="add-medication" className="border rounded p-4 mt-5">
+                        <div id="add-medication" className="rounded p-4 mt-5" style={{ border: '1px solid #333' }}>
                             {renderForm()}
                         </div>
                     </div>
