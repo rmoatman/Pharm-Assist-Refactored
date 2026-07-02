@@ -113,6 +113,7 @@ export default function MedList() {
     const [lastName, setLastName] = useState('');                  // Logged-in user's last name (for the printout heading).
     const [email, setEmail] = useState('');                        // Logged-in user's email on file (for the Email button).
     const [sortBy, setSortBy] = useState('added');                 // How to sort the on-screen list: 'added' | 'name' | 'time'.
+    const [emailProvider, setEmailProvider] = useState('gmail');   // Which email service the "Email My List" button opens.
     const [info, setInfo] = useState({});                          // Map of med title -> { use, description } from the drug-info API.
 
     // useEffect with an empty [] dependency array runs ONCE, right after the first render.
@@ -210,13 +211,29 @@ export default function MedList() {
         return lines.join('\r\n');
     };
 
-    // Opens Gmail's compose window (in a new tab) with the list pre-filled and
-    // addressed to the email on file. Using Gmail directly avoids relying on the
-    // computer having a default mail app registered for mailto: links.
+    // Opens a new-message window for the chosen email provider, pre-filled with the
+    // list and addressed to the email on file. Web providers (Gmail/Outlook/Yahoo)
+    // open in a new tab; "Other" falls back to the computer's default mail app.
     const emailMedList = () => {
-        const subject = 'My Medication List';
-        const body = buildEmailListText();
-        const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const to = encodeURIComponent(email);
+        const su = encodeURIComponent('My Medication List');
+        const body = encodeURIComponent(buildEmailListText());
+
+        let url;
+        switch (emailProvider) {
+            case 'outlook':
+                url = `https://outlook.live.com/mail/0/deeplink/compose?to=${to}&subject=${su}&body=${body}`;
+                break;
+            case 'yahoo':
+                url = `https://compose.mail.yahoo.com/?to=${to}&subject=${su}&body=${body}`;
+                break;
+            case 'mailto':
+                window.location.href = `mailto:${to}?subject=${su}&body=${body}`;
+                return;
+            case 'gmail':
+            default:
+                url = `https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${su}&body=${body}`;
+        }
         window.open(url, '_blank', 'noopener');
     };
 
@@ -318,6 +335,18 @@ export default function MedList() {
                                 <button type="button" className="btn btn-outline-secondary mb-3" style={{ marginLeft: '0.3in' }} onClick={emailMedList}>
                                     Email My List
                                 </button>
+                                {/* Which email service the button opens. */}
+                                <select
+                                    className="form-select d-inline-block w-auto mb-3 ms-2"
+                                    value={emailProvider}
+                                    onChange={(e) => setEmailProvider(e.target.value)}
+                                    aria-label="Email provider"
+                                >
+                                    <option value="gmail">Gmail</option>
+                                    <option value="outlook">Outlook.com</option>
+                                    <option value="yahoo">Yahoo</option>
+                                    <option value="mailto">Other (default app)</option>
+                                </select>
                             </div>
                             {/* Right-aligned: smooth-scrolls down to the Add a Medication section. */}
                             <button
