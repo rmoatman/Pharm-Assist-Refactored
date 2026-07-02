@@ -23,6 +23,7 @@ export default function MedList() {
     const [ afternoon, setAfternoon ] = useState(false);   // Checkbox: take in the afternoon?
     const [ evening, setEvening ] = useState(false);       // Checkbox: take in the evening?
     const [ night, setNight ] = useState(false);           // Checkbox: take at night?
+    const [ weekly, setWeekly ] = useState(false);         // Checkbox: take once a week?
     const [ as_needed, setAsNeeded] = useState(false);     // Checkbox: take as needed?
 
     // Runs when the "Add Medication" form is submitted.
@@ -37,6 +38,7 @@ export default function MedList() {
                 afternoon,
                 evening,
                 night,
+                weekly,
                 as_needed,
             }
 
@@ -58,6 +60,7 @@ export default function MedList() {
         setAfternoon(false);
         setEvening(false);
         setNight(false);
+        setWeekly(false);
         setAsNeeded(false);
     };
 
@@ -182,6 +185,11 @@ export default function MedList() {
                                         <input type="checkbox"  className="form-check-input" id="setNight" checked={night} onChange={(e) => setNight(e.target.checked)} value={night} />
                                         <label htmlFor="inputEmail4" className="form-check-label">Night</label>
                                     </div>
+                                    {/* Weekly checkbox -- updates "weekly" state */}
+                                    <div className="form-check">
+                                        <input type="checkbox" className="form-check-input" id="setWeekly" checked={weekly} onChange={(e) => setWeekly(e.target.checked)} value={weekly} />
+                                        <label htmlFor="setWeekly" className="form-check-label">Weekly</label>
+                                    </div>
                                     {/* As Needed checkbox -- updates "as_needed" state */}
                                     <div className="form-check">
                                         <input type="checkbox" className="form-check-input" id="setAsNeeded" checked={as_needed} onChange={(e) => setAsNeeded(e.target.checked)} value={as_needed} />
@@ -224,7 +232,7 @@ export default function MedList() {
                         <Medtable medlist={medlist} onDelete={handleDeleteMed} onUpdate={handleUpdateMed} />
                         {/* Off-screen clean copy used only for printing (kept in the DOM so react-to-print can capture it). */}
                         <div style={{ position: "absolute", left: "-9999px", top: 0 }} aria-hidden="true">
-                            <PrintableMedList ref={printRef} meds={Array.isArray(medlist) ? medlist : []} />
+                            <PrintableMedList ref={printRef} meds={Array.isArray(medlist) ? medlist : []} interactions={interactions} />
                         </div>
                     </div>
                 </div>

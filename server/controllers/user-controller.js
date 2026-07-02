@@ -160,7 +160,7 @@ module.exports = {
   // by its subdocument _id (medId), so titles don't have to be unique.
   // Inputs: { user } (from auth), { body: { medId, morning, afternoon, ... } }.
   async updateMed({ user, body }, res) {
-    const { medId, morning, afternoon, evening, night, as_needed } = body;
+    const { medId, morning, afternoon, evening, night, weekly, as_needed } = body;
     try {
       const updatedUser = await User.findOneAndUpdate(
         // Match this user AND the specific medicine inside their medList array.
@@ -173,6 +173,7 @@ module.exports = {
             'medList.$.afternoon': !!afternoon,
             'medList.$.evening': !!evening,
             'medList.$.night': !!night,
+            'medList.$.weekly': !!weekly,
             'medList.$.as_needed': !!as_needed,
           },
         },

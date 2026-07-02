@@ -12,15 +12,20 @@ const SCHEDULE = [
   ['afternoon', 'Afternoon'],
   ['evening', 'Evening'],
   ['night', 'Night'],
+  ['weekly', 'Weekly'],
   ['as_needed', 'As needed'],
 ];
+
+// Capitalize the first letter for nicer display.
+const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 
 // Inline styles so the printout looks tidy without depending on app CSS.
 const cell = { border: '1px solid #333', padding: '6px 10px', textAlign: 'left' };
 const centerCell = { ...cell, textAlign: 'center' };
 
-const PrintableMedList = React.forwardRef(({ meds = [] }, ref) => {
+const PrintableMedList = React.forwardRef(({ meds = [], interactions = [] }, ref) => {
   const list = Array.isArray(meds) ? meds : []; // medlist can start as '' before it loads
+  const flagged = Array.isArray(interactions) ? interactions : [];
 
   return (
     <div ref={ref} style={{ padding: '24px', color: '#000' }}>
@@ -39,7 +44,7 @@ const PrintableMedList = React.forwardRef(({ meds = [] }, ref) => {
         </thead>
         <tbody>
           {list.length === 0 ? (
-            <tr><td style={cell} colSpan={6}>No medications.</td></tr>
+            <tr><td style={cell} colSpan={7}>No medications.</td></tr>
           ) : (
             list.map((med) => (
               <tr key={med._id}>
@@ -52,6 +57,19 @@ const PrintableMedList = React.forwardRef(({ meds = [] }, ref) => {
           )}
         </tbody>
       </table>
+
+      {/* Interaction note: only printed when the check found possible interactions. */}
+      {flagged.length > 0 && (
+        <div style={{ marginTop: '16px', border: '1px solid #b00020', padding: '10px' }}>
+          <strong>⚠️ A possible interaction was detected between:</strong>
+          <ul style={{ marginTop: '6px', marginBottom: '6px' }}>
+            {flagged.map((it, i) => (
+              <li key={i}>{cap(it.inputA || it.a)} &amp; {cap(it.inputB || it.b)}</li>
+            ))}
+          </ul>
+          Please contact your healthcare professional or pharmacist.
+        </div>
+      )}
 
       <p style={{ marginTop: '16px', fontSize: '0.85em' }}>
         Informational only — not medical advice. Please review with a healthcare professional or pharmacist.

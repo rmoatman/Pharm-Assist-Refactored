@@ -39,6 +39,10 @@ const medicineSchema = new Schema(
     night: {
       type: Boolean
     },
+    // Take once a week (weekly dosing)?
+    weekly: {
+      type: Boolean
+    },
     // Take only when needed (as-needed / "PRN")?
     as_needed: {
       type: Boolean

@@ -9,8 +9,8 @@
 
 import React, { useState } from 'react';
 
-// The five time-of-day fields that make up a medication's schedule.
-const SCHEDULE_FIELDS = ['morning', 'afternoon', 'evening', 'night', 'as_needed'];
+// The schedule fields that make up a medication's dosing schedule.
+const SCHEDULE_FIELDS = ['morning', 'afternoon', 'evening', 'night', 'weekly', 'as_needed'];
 
 export default function MedTable(props) {
     const { medlist, onDelete, onUpdate } = props;
@@ -28,6 +28,7 @@ export default function MedTable(props) {
             afternoon: !!med.afternoon,
             evening: !!med.evening,
             night: !!med.night,
+            weekly: !!med.weekly,
             as_needed: !!med.as_needed,
         });
     };
@@ -46,7 +47,7 @@ export default function MedTable(props) {
 
     // Builds the table's header row from a fixed list of column names.
     const renderHeader = () => {
-        let headerElement = ['title', 'morning', 'afternoon', 'evening', 'night', 'as needed', 'actions'];
+        let headerElement = ['title', 'morning', 'afternoon', 'evening', 'night', 'weekly', 'as needed', 'actions'];
         return headerElement.map((key, index) => {
             return <th key={index}>{key.toUpperCase()}</th>;
         });
@@ -56,7 +57,7 @@ export default function MedTable(props) {
     const displayMeds = () => {
         // Nothing saved yet (or the list hasn't loaded) -> show a friendly message.
         if (!medlist || medlist.length === 0) {
-            return (<tr><td colSpan="7"><h2>no meds!</h2></td></tr>);
+            return (<tr><td colSpan="8"><h2>no meds!</h2></td></tr>);
         }
 
         return medlist.map((med) => {
