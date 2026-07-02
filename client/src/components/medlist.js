@@ -338,7 +338,7 @@ export default function MedList() {
                                 {/* Which email service the button opens. */}
                                 <select
                                     className="form-select d-inline-block w-auto mb-3"
-                                    style={{ marginLeft: '0.15in', height: 'calc(1.5em + 0.75rem + 2px)', verticalAlign: 'middle' }}
+                                    style={{ marginLeft: '0.075in', height: 'calc(1.5em + 0.75rem + 2px)', verticalAlign: 'middle' }}
                                     value={emailProvider}
                                     onChange={(e) => setEmailProvider(e.target.value)}
                                     aria-label="Email provider"
