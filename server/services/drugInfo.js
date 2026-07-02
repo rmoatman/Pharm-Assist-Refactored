@@ -58,20 +58,63 @@ function extractUse(purpose, indications) {
   const p = clean(purpose).replace(/^purpose[s]?:?\s*/i, '').trim();
   if (p) return capFirst(softCap(p, 160));
 
-  // Otherwise pull a brief phrase out of the (verbose) indications section.
+  // Otherwise pull the indication(s) out of the (verbose) indications section.
   let t = clean(indications);
   if (!t) return null;
+  t = t
+    .replace(/\(\s*\d+(?:\.\d+)*\s*\)/g, ' ') // drop "( 1.1 )" cross-references (their periods cut text short)
+    .replace(/\s+/g, ' ')
+    .trim();
   t = t.replace(/^\d+\s*/, '').replace(/^(INDICATIONS AND USAGE|Use\(s\)|Uses?|Indications?)\s*/i, '').trim();
+  t = t.split(/limitations?\s+of\s+use/i)[0].trim(); // drop the "Limitations of Use" subsection
 
-  const m =
-    t.match(/indicated\s+(?:for|to|as)\b[:\s]+([^.]*)/i) ||
-    t.match(/\b((?:treats?|relieves?|reduces?)\s+[^.]*)/i);
-  let use = (m ? m[1] : t.split(/(?<=[.])\s/)[0]) || '';
-  use = use.replace(/^the treatment of\s+/i, '').replace(/^:\s*/, '').trim();
-  if (!use) return null;
-  // Return the complete indication (the client shows a short line + this full text
-  // on hover). The high cap is only a safety bound against pathological run-ons.
-  return capFirst(softCap(use, 800));
+  const conditions = [];
+
+  if (t.includes('•')) {
+    // Bulleted list of indications: take each bullet (stop at any "Limitations of Use").
+    const bulletPart = t.slice(t.indexOf('•')).split(/limitations?\s+of\s+use/i)[0];
+    bulletPart.split('•').forEach((b) => {
+      const c = b.split(/(?<=[.])\s/)[0].trim().replace(/[.;,\s]+$/, ''); // first sentence, no trailing punctuation
+      if (c) conditions.push(c);
+    });
+  } else {
+    // One or more "indicated for X" sentences (skip "not indicated ...").
+    const re = /(?<!not )indicated\s+(?:for|to|as)\b[:\s]+(?:the treatment of\s+)?([^.]+)/gi;
+    let mm;
+    while ((mm = re.exec(t)) !== null) {
+      const c = mm[1].trim().replace(/[,;\s]+$/, '');
+      if (c) conditions.push(c);
+    }
+    if (!conditions.length) {
+      // Fallback: a "treats/relieves/reduces X" phrase, else the first sentence.
+      const m = t.match(/\b((?:treats?|relieves?|reduces?)\s+[^.]*)/i);
+      const c = ((m ? m[1] : t.split(/(?<=[.])\s/)[0]) || '')
+        .replace(/^the treatment of\s+/i, '')
+        .replace(/^:\s*/, '')
+        .trim();
+      if (c) conditions.push(c);
+    }
+  }
+
+  if (!conditions.length) return null;
+
+  // Dedupe (case-insensitive) and join up to a handful of indications.
+  const seen = new Set();
+  const uniq = [];
+  for (let c of conditions) {
+    // Drop a trailing abbreviation fragment left by a mid-word period, e.g. the
+    // "; i" from "...DSM-III-R; i.e., ..." (the capture stopped at "i.e.").
+    c = c.replace(/[;,]\s*[a-z]$/i, '').replace(/[;,\s]+$/, '').trim();
+    if (c.replace(/[^a-zA-Z]/g, '').length < 3) continue; // skip stray fragments
+    const k = c.toLowerCase();
+    if (!seen.has(k)) {
+      seen.add(k);
+      uniq.push(c);
+    }
+    if (uniq.length >= 6) break;
+  }
+  // The client shows a short line + this full text on hover; the cap is a safety bound.
+  return capFirst(softCap(uniq.join('; '), 800));
 }
 
 // Fetch one OpenFDA label for a generic-name search.
