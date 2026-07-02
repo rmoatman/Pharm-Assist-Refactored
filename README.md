@@ -1,4 +1,4 @@
-# Pharm-Assist
+# Pharm-Assist: Refactored
 _Refactored by R. Oatman with assistance from Claude Code (Anthropic) — July 2026_
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
