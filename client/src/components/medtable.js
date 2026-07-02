@@ -13,6 +13,17 @@ import { goodRxUrl, singleCareUrl } from '../utils/discounts'; // Links to presc
 // The schedule fields that make up a medication's dosing schedule.
 const SCHEDULE_FIELDS = ['morning', 'afternoon', 'evening', 'night', 'weekly', 'as_needed'];
 
+// Pins the Actions (Edit/Remove) column to the right edge so it stays visible
+// even when the wide table scrolls horizontally on smaller screens.
+const stickyActions = {
+    position: 'sticky',
+    right: 0,
+    background: '#fff',
+    zIndex: 2,
+    whiteSpace: 'nowrap',
+    boxShadow: '-4px 0 6px -2px rgba(0,0,0,0.12)',
+};
+
 export default function MedTable(props) {
     const { medlist, onDelete, onUpdate, info = {} } = props;
 
@@ -52,7 +63,7 @@ export default function MedTable(props) {
     const renderHeader = () => {
         let headerElement = ['title', 'morning', 'afternoon', 'evening', 'night', 'weekly', 'as needed', 'actions'];
         return headerElement.map((key, index) => {
-            return <th key={index}>{key.toUpperCase()}</th>;
+            return <th key={index} style={key === 'actions' ? stickyActions : undefined}>{key.toUpperCase()}</th>;
         });
     };
 
@@ -115,7 +126,7 @@ export default function MedTable(props) {
                         )}
                         {/* Appearance description, with a blank space above it. */}
                         {info[med.title]?.description && (
-                            <div style={{ fontSize: '0.8em', color: '#555', marginTop: '10px' }}>
+                            <div style={{ fontSize: '0.8em', color: '#555', marginTop: '10px', maxWidth: '320px' }}>
                                 {info[med.title].description}
                             </div>
                         )}
@@ -131,8 +142,9 @@ export default function MedTable(props) {
                     {SCHEDULE_FIELDS.map((field) => (
                         <React.Fragment key={field}>{scheduleCell(field)}</React.Fragment>
                     ))}
-                    {/* Actions: Edit/Remove normally, or Save/Cancel while editing this row. */}
-                    <td>
+                    {/* Actions: Edit/Remove normally, or Save/Cancel while editing this row.
+                        Pinned to the right so it's always visible without horizontal scrolling. */}
+                    <td style={stickyActions}>
                         {isEditing ? (
                             <>
                                 <button
