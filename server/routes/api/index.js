@@ -17,6 +17,8 @@ const userRoutes = require('./user-routes');
 const interactionRoutes = require('./interaction-routes');
 // Import the public pill-image lookup routes.
 const pillimageRoutes = require('./pillimage-routes');
+// Import the public pill text-description lookup routes.
+const pilldescriptionRoutes = require('./pilldescription-routes');
 
 
 // Mount user routes at "/users". Combined with the "/api" prefix from
@@ -27,7 +29,11 @@ router.use('/users', userRoutes);
 router.use('/interactions', interactionRoutes);
 
 // Mount pill-image routes at "/pillimage" -> "/api/pillimage".
+// (Currently unused by the client — kept for when a true pill-photo API is added.)
 router.use('/pillimage', pillimageRoutes);
+
+// Mount pill-description routes at "/pilldescription" -> "/api/pilldescription".
+router.use('/pilldescription', pilldescriptionRoutes);
 
 // Export this API router so the parent router can attach it.
 module.exports = router;
