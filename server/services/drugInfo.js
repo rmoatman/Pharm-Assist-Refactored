@@ -69,7 +69,9 @@ function extractUse(purpose, indications) {
   let use = (m ? m[1] : t.split(/(?<=[.])\s/)[0]) || '';
   use = use.replace(/^the treatment of\s+/i, '').replace(/^:\s*/, '').trim();
   if (!use) return null;
-  return capFirst(softCap(use, 240)); // full text; the client shows a short line + this on hover
+  // Return the complete indication (the client shows a short line + this full text
+  // on hover). The high cap is only a safety bound against pathological run-ons.
+  return capFirst(softCap(use, 800));
 }
 
 // Fetch one OpenFDA label for a generic-name search.
