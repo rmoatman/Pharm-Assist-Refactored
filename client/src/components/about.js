@@ -73,7 +73,7 @@ export default function About() {
               <li>Do you want to look for discounts?</li>
             </ul>
             <p>
-              It provides your daily medication schedule and can alert you when
+              Pharm-Assist provides your daily medication schedule and can alert you when
               you may need to contact a professional about medication
               interaction.
             </p>
