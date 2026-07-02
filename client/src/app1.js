@@ -15,6 +15,8 @@ import axios from "axios";
 // Import the AuthContextProvider component. It provides "is the user logged in?"
 // information to every component inside it (see context/authcontext.js).
 import { AuthContextProvider } from "./context/authcontext";
+// Import the medical disclaimer banner shown at the bottom of every page.
+import Disclaimer from "./components/disclaimer";
 
 // Tell axios to always send cookies/credentials with every request. This lets
 // the server recognize the logged-in user (e.g. via a session cookie) on each call.
@@ -29,6 +31,8 @@ function App() {
     <AuthContextProvider>
       {/* Routed renders the actual pages based on the current URL. */}
       <Routed />
+      {/* Disclaimer shows on every page (it sits outside the routes). */}
+      <Disclaimer />
     </AuthContextProvider>
   );
 }
