@@ -33,7 +33,7 @@ const handleFormSubmit = async (event) => {
 
       // POST the credentials to the login endpoint. withCredentials sends/stores the auth cookie.
       await axios.post(
-        "http://localhost:3001/api/users/login",
+        "/api/users/login",
         registerData,
         { withCredentials: true }
       );
@@ -48,7 +48,7 @@ const handleFormSubmit = async (event) => {
   const handleLogOut = async (event) => {
       // GET the logout endpoint to end the session on the server.
       await axios.get(
-      "http://localhost:3001/api/users/logout"
+      "/api/users/logout"
     );
     await getLoggedIn(); // Refresh login state (now logged out).
     history.push("/");   // Send the user back to the home page.

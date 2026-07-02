@@ -35,7 +35,7 @@ export default function SignUp() {
 
       // POST the new-user data to the register endpoint. withCredentials sends/stores the auth cookie.
       await axios.post(
-        "http://localhost:3001/api/users/register",
+        "/api/users/register",
         registerData,
         { withCredentials: true }
       );

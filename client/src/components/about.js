@@ -36,7 +36,7 @@ export default function About() {
       setLoading(true);  // show the "checking…" state
       setChecked(true);  // from now on, render the result area
       const res = await axios.post(
-        "http://localhost:3001/api/interactions",
+        "/api/interactions",
         { meds: [medicationOne, medicationTwo] }
       );
       setInteractions(res.data.interactions || []);

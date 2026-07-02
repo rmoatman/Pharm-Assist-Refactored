@@ -29,3 +29,13 @@ ReactDOM.render(
   // the React app into it. This is the single spot on the page React controls.
   document.getElementById('root')
 );
+
+// Register the service worker (public/sw.js) so the app is installable and works
+// offline. Only runs in production builds served over HTTPS (or localhost).
+if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((err) => {
+      console.log('Service worker registration failed:', err);
+    });
+  });
+}

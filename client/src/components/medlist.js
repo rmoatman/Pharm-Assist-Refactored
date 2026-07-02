@@ -55,7 +55,7 @@ export default function MedList() {
 
             // POST the new medication to the saveMed endpoint.
             await axios.post(
-                "http://localhost:3001/api/users/saveMed",
+                "/api/users/saveMed",
                 medicineData
             );
 
@@ -80,7 +80,7 @@ export default function MedList() {
         try {
             // GET the deleteMed endpoint, passing the title as a URL query parameter (encoded for safety).
             await axios.get(
-                `http://localhost:3001/api/users/deleteMed?title=${encodeURIComponent(title)}`
+                `/api/users/deleteMed?title=${encodeURIComponent(title)}`
             );
             // refresh the table so the removed medication disappears immediately
             await getUserData();
@@ -94,7 +94,7 @@ export default function MedList() {
     const handleUpdateMed = async (medId, schedule) => {
         try {
             await axios.post(
-                "http://localhost:3001/api/users/updateMed",
+                "/api/users/updateMed",
                 { medId, ...schedule }
             );
             // refresh so the updated schedule (and interaction check) reflect the change
@@ -138,7 +138,7 @@ export default function MedList() {
         }
         try {
             setCheckingInteractions(true);
-            const res = await axios.post("http://localhost:3001/api/interactions", { meds: titles });
+            const res = await axios.post("/api/interactions", { meds: titles });
             setInteractions(res.data.interactions || []);
         } catch (err) {
             console.error(err);
@@ -156,7 +156,7 @@ export default function MedList() {
         const entries = await Promise.all(
             titles.map(async (t) => {
                 try {
-                    const r = await axios.get(`http://localhost:3001/api/druginfo?name=${encodeURIComponent(t)}`);
+                    const r = await axios.get(`/api/druginfo?name=${encodeURIComponent(t)}`);
                     return [t, { use: r.data.use, description: r.data.description }];
                 } catch (err) {
                     return [t, { use: null, description: null }];
@@ -168,7 +168,7 @@ export default function MedList() {
 
     // Fetches the logged-in user's saved medications from the API and stores them in "medlist".
         const getUserData = () => {
-        return axios.get("http://localhost:3001/api/users/getSingleUser")
+        return axios.get("/api/users/getSingleUser")
         .then((response) => {
             const medlist = response.data.medList // The user's medication array from the server.
             console.log(medlist)                  // Log it for debugging.

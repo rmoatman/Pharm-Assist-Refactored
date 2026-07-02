@@ -24,7 +24,7 @@ export default function Login() {
     try {
       // POST the email/password to the login endpoint. withCredentials sends/stores the auth cookie.
       await axios.post(
-        "http://localhost:3001/api/users/login",
+        "/api/users/login",
         { email, password },
         { withCredentials: true }
       );

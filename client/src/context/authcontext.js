@@ -30,7 +30,7 @@ function AuthContextProvider(props) {
     // Call the REST API endpoint that reports login status. "await" pauses until
     // the request finishes and returns the server's response.
     const loggedInRes = await axios.get(
-      "http://localhost:3001/api/users/loggedIn"
+      "/api/users/loggedIn"
     );
     // Save the server's answer (response .data) into state. Changing state here
     // re-renders consumers so routes update to match the login status.

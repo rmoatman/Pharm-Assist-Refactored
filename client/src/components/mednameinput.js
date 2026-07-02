@@ -33,7 +33,7 @@ export default function MedNameInput({ value, onChange, placeholder, id, require
     }
     timer.current = setTimeout(async () => {
       try {
-        const r = await axios.get(`http://localhost:3001/api/drugsuggest?q=${encodeURIComponent(v.trim())}`);
+        const r = await axios.get(`/api/drugsuggest?q=${encodeURIComponent(v.trim())}`);
         setSuggestions(r.data.suggestions || []);
       } catch (err) {
         setSuggestions([]);
