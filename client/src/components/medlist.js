@@ -24,6 +24,9 @@ const EMAIL_GROUPS = [
   ['as_needed', 'As needed'],
 ];
 
+// Order of times of day, used to sort by "time taken" (earliest first).
+const TIME_ORDER = ['morning', 'afternoon', 'night', 'weekly', 'as_needed'];
+
 
 export default function MedList() {
 
@@ -109,6 +112,7 @@ export default function MedList() {
     const [firstName, setFirstName] = useState('');                // Logged-in user's first name (for the printout heading).
     const [lastName, setLastName] = useState('');                  // Logged-in user's last name (for the printout heading).
     const [email, setEmail] = useState('');                        // Logged-in user's email on file (for the Email button).
+    const [sortBy, setSortBy] = useState('added');                 // How to sort the on-screen list: 'added' | 'name' | 'time'.
     const [info, setInfo] = useState({});                          // Map of med title -> { use, description } from the drug-info API.
 
     // useEffect with an empty [] dependency array runs ONCE, right after the first render.
@@ -273,6 +277,20 @@ export default function MedList() {
                     </>
         )}
 
+    // Sort the medications for on-screen display based on the selected option.
+    const rows = Array.isArray(medlist) ? [...medlist] : [];
+    if (sortBy === 'name') {
+        rows.sort((a, b) => (a.title || '').localeCompare(b.title || '', undefined, { sensitivity: 'base' }));
+    } else if (sortBy === 'time') {
+        // A med's sort key is the EARLIEST time it's taken, so a med taken more
+        // than once a day appears once, at its earliest time.
+        const earliest = (m) => {
+            for (let i = 0; i < TIME_ORDER.length; i++) if (m[TIME_ORDER[i]]) return i;
+            return TIME_ORDER.length; // unscheduled -> after the scheduled meds
+        };
+        rows.sort((a, b) => (earliest(a) - earliest(b)) || (a.title || '').localeCompare(b.title || '', undefined, { sensitivity: 'base' }));
+    }
+
     return (
         <>
             <div className="container">
@@ -294,7 +312,7 @@ export default function MedList() {
                                     documentTitle="Medication List"
                                 />
                                 {/* Opens the mail app with the list pre-filled to the email on file. */}
-                                <button type="button" className="btn btn-outline-secondary mb-3 ms-2" onClick={emailMedList}>
+                                <button type="button" className="btn btn-outline-secondary mb-3 ms-3" onClick={emailMedList}>
                                     Email My List
                                 </button>
                             </div>
@@ -309,8 +327,24 @@ export default function MedList() {
                         </div>
                         {/* Interaction warnings for the current list (Phase 2). */}
                         <InteractionWarnings interactions={interactions} loading={checkingInteractions} medCount={medlist.length} />
-                        {/* Medtable displays the meds; onDelete/onUpdate let it remove or edit-schedule a med. */}
-                        <Medtable medlist={medlist} onDelete={handleDeleteMed} onUpdate={handleUpdateMed} info={info} />
+                        {/* Sort control for the on-screen list (shown when there's more than one med). */}
+                        {Array.isArray(medlist) && medlist.length > 1 && (
+                            <div className="mb-2">
+                                <label htmlFor="sortBy" className="me-2">Sort by:</label>
+                                <select
+                                    id="sortBy"
+                                    className="form-select d-inline-block w-auto"
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value)}
+                                >
+                                    <option value="added">Added order</option>
+                                    <option value="name">Name (A–Z)</option>
+                                    <option value="time">Time taken</option>
+                                </select>
+                            </div>
+                        )}
+                        {/* Medtable displays the (sorted) meds; onDelete/onUpdate let it remove or edit-schedule a med. */}
+                        <Medtable medlist={rows} onDelete={handleDeleteMed} onUpdate={handleUpdateMed} info={info} />
                         {/* Off-screen clean copy used only for printing (kept in the DOM so react-to-print can capture it). */}
                         <div style={{ position: "absolute", left: "-9999px", top: 0 }} aria-hidden="true">
                             <PrintableMedList ref={printRef} meds={Array.isArray(medlist) ? medlist : []} interactions={interactions} firstName={firstName} lastName={lastName} />
