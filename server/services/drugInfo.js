@@ -20,7 +20,13 @@ const cache = new Map();
 // --- small text helpers ---
 const clean = (v) => (Array.isArray(v) ? v.join(' ') : (v || '')).replace(/\s+/g, ' ').trim();
 const capFirst = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
-const truncate = (s, n) => (s.length > n ? s.slice(0, n - 1).trim() + '…' : s);
+const truncate = (s, n) => {
+  if (s.length <= n) return s;
+  let cut = s.slice(0, n);
+  const sp = cut.lastIndexOf(' ');
+  if (sp > n * 0.6) cut = cut.slice(0, sp); // break on a word boundary when reasonable
+  return cut.replace(/[\s,;:]+$/, '') + '…'; // trim trailing punctuation before the ellipsis
+};
 
 // --- appearance ("description") from how_supplied ---
 const COLORS = 'white|off-white|yellow|pink|blue|green|orange|brown|red|purple|gray|grey|tan|beige|peach|lavender|clear|colorless';

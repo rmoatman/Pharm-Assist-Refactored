@@ -83,10 +83,10 @@ export default function MedTable(props) {
                 <tr key={med._id}>
                     {/* Medication name, what it's used for, then a spaced-out appearance description. */}
                     <td>
-                        {med.title}
-                        {/* What the medication is used for (directly under the name). */}
+                        <strong>{med.title}</strong>
+                        {/* What the medication is used for, in italics (directly under the name). */}
                         {info[med.title]?.use && (
-                            <div style={{ fontSize: '0.85em', color: '#333', marginTop: '2px' }}>
+                            <div style={{ fontSize: '0.85em', color: '#333', marginTop: '2px', fontStyle: 'italic' }}>
                                 {info[med.title].use}
                             </div>
                         )}
@@ -96,8 +96,8 @@ export default function MedTable(props) {
                                 {info[med.title].description}
                             </div>
                         )}
-                        {/* Links to check prescription discounts for this medication. */}
-                        <div style={{ fontSize: '0.8em', marginTop: '2px' }}>
+                        {/* Links to check prescription discounts, with a space above them. */}
+                        <div style={{ fontSize: '0.8em', marginTop: '14px' }}>
                             💲 Discounts:{' '}
                             <a href={goodRxUrl(med.title)} target="_blank" rel="noopener noreferrer">GoodRx</a>
                             {' · '}
