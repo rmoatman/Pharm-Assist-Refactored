@@ -11,7 +11,6 @@
 // ===========================================================================
 
 const { User } = require('../models');            // The User Mongoose model (find/create/update users)
-const { Medicine } = require('../models');        // The Medicine model (imported but not directly used in this file)
 const { signToken, secret } = require('../utils/auth'); // Helper that creates a signed JWT + the shared signing secret
 const jwt = require('jsonwebtoken');              // JWT library, used here to verify a token in "loggedin"
 
@@ -49,6 +48,18 @@ module.exports = {
   // register: create a brand-new user account.
   // Input: request body containing the new user's details; res for the response.
   async register({ body }, res) {
+    // Basic input validation before we touch the database.
+    const { firstName, lastName, username, email, password } = body;
+    if (!firstName || !lastName || !username || !email || !password) {
+      return res.status(400).json({ errorMessage: "All fields are required." });
+    }
+    if (!/.+@.+\..+/.test(email)) {
+      return res.status(400).json({ errorMessage: "Please enter a valid email address." });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({ errorMessage: "Password must be at least 6 characters." });
+    }
+
     const existingUser = await User.findOne({ email: body.email }); // Is this email already taken?
 
     if (existingUser)
@@ -74,12 +85,17 @@ module.exports = {
   // login: sign an existing user in by checking their email and password.
   // Input: request body with { email, password }; res for the response.
   async login({ body }, res) {
+    // Both fields are required to attempt a login.
+    if (!body.email || !body.password) {
+      return res.status(400).json({ errorMessage: "Email and password are required." });
+    }
+
     const user = await User.findOne({ email: body.email }); // Find the user by email
 
     if(!user) {
-      // No user with that email. (Note: uses status 410 "Gone" here, whereas the
-      // wrong-password case below uses 401 — slightly inconsistent status codes.)
-      return res.status(410).json({ errorMessage: "Incorrect username or password" });
+      // Use 401 for BOTH unknown email and wrong password: consistent status
+      // codes, and we avoid revealing which email addresses have accounts.
+      return res.status(401).json({ errorMessage: "Incorrect username or password" });
     }
 
     // Compare the submitted password to the stored (hashed) one.
