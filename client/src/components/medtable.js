@@ -11,7 +11,7 @@ import React, { useState } from 'react';
 import { goodRxUrl, singleCareUrl } from '../utils/discounts'; // Links to prescription-discount sites.
 
 // The schedule fields that make up a medication's dosing schedule.
-const SCHEDULE_FIELDS = ['morning', 'afternoon', 'evening', 'night', 'weekly', 'as_needed'];
+const SCHEDULE_FIELDS = ['morning', 'afternoon', 'night', 'weekly', 'as_needed'];
 
 // Pins the Actions (Edit/Remove) column to the right edge so it stays visible
 // even when the wide table scrolls horizontally on smaller screens.
@@ -20,7 +20,7 @@ const stickyActions = {
     right: 0,
     background: '#fff',
     zIndex: 2,
-    whiteSpace: 'nowrap',
+    width: '90px', // narrow, since Edit/Remove are stacked
     boxShadow: '-4px 0 6px -2px rgba(0,0,0,0.12)',
 };
 
@@ -40,7 +40,6 @@ export default function MedTable(props) {
         setDraft({
             morning: !!med.morning,
             afternoon: !!med.afternoon,
-            evening: !!med.evening,
             night: !!med.night,
             weekly: !!med.weekly,
             as_needed: !!med.as_needed,
@@ -61,9 +60,11 @@ export default function MedTable(props) {
 
     // Builds the table's header row from a fixed list of column names.
     const renderHeader = () => {
-        let headerElement = ['title', 'morning', 'afternoon', 'evening', 'night', 'weekly', 'as needed', 'actions'];
+        let headerElement = ['title', 'morning', 'afternoon', 'night', 'weekly', 'as needed', 'actions'];
         return headerElement.map((key, index) => {
-            return <th key={index} style={key === 'actions' ? stickyActions : undefined}>{key.toUpperCase()}</th>;
+            if (key === 'actions') return <th key={index} style={stickyActions}>{key.toUpperCase()}</th>;
+            const isSchedule = key !== 'title'; // center the time-of-day columns over their checkboxes
+            return <th key={index} style={isSchedule ? { textAlign: 'center' } : undefined}>{key.toUpperCase()}</th>;
         });
     };
 
@@ -71,16 +72,19 @@ export default function MedTable(props) {
     const displayMeds = () => {
         // Nothing saved yet (or the list hasn't loaded) -> show a friendly message.
         if (!medlist || medlist.length === 0) {
-            return (<tr><td colSpan="8"><h2>no meds!</h2></td></tr>);
+            return (<tr><td colSpan="7"><h2>no meds!</h2></td></tr>);
         }
 
-        return medlist.map((med) => {
+        return medlist.map((med, rowIndex) => {
             const isEditing = editingId === med._id; // is THIS row being edited?
+            // Match the striped-row background so the pinned Actions column keeps the
+            // same grey/white as the rest of the row (table-striped shades odd rows).
+            const rowBg = rowIndex % 2 === 0 ? '#f2f2f2' : '#fff';
 
             // A single schedule checkbox cell. While editing it's toggleable and
             // bound to the draft; otherwise it's read-only and shows the saved value.
             const scheduleCell = (field) => (
-                <td>
+                <td style={{ textAlign: 'center' }}>
                     <input
                         type="checkbox"
                         id={`medication_${med._id}_${field}`}
@@ -144,12 +148,12 @@ export default function MedTable(props) {
                     ))}
                     {/* Actions: Edit/Remove normally, or Save/Cancel while editing this row.
                         Pinned to the right so it's always visible without horizontal scrolling. */}
-                    <td style={stickyActions}>
+                    <td style={{ ...stickyActions, background: rowBg }}>
                         {isEditing ? (
                             <>
                                 <button
                                     type="button"
-                                    className="btn btn-outline-success btn-sm me-2"
+                                    className="btn btn-outline-success btn-sm d-block w-100 mb-1"
                                     onClick={() => saveEdit(med._id)}
                                     aria-label={`Save schedule for ${med.title}`}
                                 >
@@ -157,7 +161,7 @@ export default function MedTable(props) {
                                 </button>
                                 <button
                                     type="button"
-                                    className="btn btn-outline-secondary btn-sm"
+                                    className="btn btn-outline-secondary btn-sm d-block w-100"
                                     onClick={cancelEdit}
                                     aria-label={`Cancel editing ${med.title}`}
                                 >
@@ -168,7 +172,7 @@ export default function MedTable(props) {
                             <>
                                 <button
                                     type="button"
-                                    className="btn btn-outline-primary btn-sm me-2"
+                                    className="btn btn-outline-primary btn-sm d-block w-100 mb-1"
                                     onClick={() => startEdit(med)}
                                     aria-label={`Edit schedule for ${med.title}`}
                                 >
@@ -176,7 +180,7 @@ export default function MedTable(props) {
                                 </button>
                                 <button
                                     type="button"
-                                    className="btn btn-outline-danger btn-sm"
+                                    className="btn btn-outline-danger btn-sm d-block w-100"
                                     onClick={() => onDelete(med.title)}
                                     aria-label={`Remove ${med.title}`}
                                 >

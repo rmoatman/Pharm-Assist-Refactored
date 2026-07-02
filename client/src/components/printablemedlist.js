@@ -12,7 +12,6 @@ import React from 'react';
 const GROUPS = [
   ['morning', 'Morning'],
   ['afternoon', 'Afternoon'],
-  ['evening', 'Evening'],
   ['night', 'Night'],
   ['weekly', 'Weekly'],
   ['as_needed', 'As needed'],

@@ -22,7 +22,6 @@ export default function MedList() {
     const [ title, setTitle ] = useState('');              // The medication's name.
     const [ morning, setMorning ] = useState(false);       // Checkbox: take in the morning?
     const [ afternoon, setAfternoon ] = useState(false);   // Checkbox: take in the afternoon?
-    const [ evening, setEvening ] = useState(false);       // Checkbox: take in the evening?
     const [ night, setNight ] = useState(false);           // Checkbox: take at night?
     const [ weekly, setWeekly ] = useState(false);         // Checkbox: take once a week?
     const [ as_needed, setAsNeeded] = useState(false);     // Checkbox: take as needed?
@@ -37,7 +36,6 @@ export default function MedList() {
                 title,
                 morning,
                 afternoon,
-                evening,
                 night,
                 weekly,
                 as_needed,
@@ -59,7 +57,6 @@ export default function MedList() {
         setTitle('');
         setMorning(false);
         setAfternoon(false);
-        setEvening(false);
         setNight(false);
         setWeekly(false);
         setAsNeeded(false);
@@ -199,11 +196,6 @@ export default function MedList() {
                                     <div className="form-check">
                                         <input type="checkbox" className="form-check-input" id="setAfternoon" checked={afternoon} onChange={(e) => setAfternoon(e.target.checked)} value={afternoon} />
                                         <label htmlFor="setAfternoon" className="form-check-label">Afternoon</label>
-                                    </div>
-                                    {/* Evening checkbox -- updates "evening" state */}
-                                    <div className="form-check">
-                                        <input type="checkbox" className="form-check-input" id="setEvening" checked={evening} onChange={(e) => setEvening(e.target.checked)} value={evening} />
-                                        <label htmlFor="setEvening" className="form-check-label">Evening</label>
                                     </div>
                                     {/* Night checkbox -- updates "night" state */}
                                     <div className="form-check">
