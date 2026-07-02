@@ -10,6 +10,7 @@ import { Link } from "react-router-dom"; // Link = navigate to another route (e.
 import { Form } from "react-bootstrap"; // Pre-styled Bootstrap form components.
 import axios from "axios"; // HTTP client used to call our interaction API.
 import InteractionWarnings from "./interactionwarnings"; // Shared component that displays the interaction result.
+import { goodRxUrl, singleCareUrl } from "../utils/discounts"; // Links to prescription-discount sites.
 
 // Called from src/app.js
 export default function About() {
@@ -21,6 +22,7 @@ export default function About() {
   const [interactions, setInteractions] = useState([]); // Flagged pairs returned by the API.
   const [loading, setLoading] = useState(false);        // True while the check is running.
   const [checked, setChecked] = useState(false);        // True once a check has completed (so we show a result).
+  const [priceDrug, setPriceDrug] = useState("");       // Medication name typed into the price-check box.
 
   // Create event handler for Compare Button
   // Runs when the "Compare" form is submitted. Posts the two medication names to
@@ -157,9 +159,28 @@ export default function About() {
           </div>
           {/* End of div Holding Two Medication Input Fields */}
 
-          {/* Good RX Widget: empty container that an external GoodRx script fills in with a price-search widget */}
+          {/* Prescription price check — public, no sign-in needed. */}
           <div className="col-md-6 pt-5">
-            <div id="goodrx_search_widget"> </div>
+            <h3>Check Prescription Prices</h3>
+            <p>Look up discount prices for a medication — no account needed.</p>
+            <input
+              type="text"
+              className="form-control mb-2"
+              placeholder="Medication name (e.g. lisinopril)"
+              value={priceDrug}
+              onChange={(e) => setPriceDrug(e.target.value)}
+            />
+            {/* Links appear once a name is entered; each opens that drug's price page. */}
+            {priceDrug.trim() && (
+              <div>
+                <a className="btn btn-outline-info me-2" href={goodRxUrl(priceDrug)} target="_blank" rel="noopener noreferrer">
+                  GoodRx
+                </a>
+                <a className="btn btn-outline-info" href={singleCareUrl(priceDrug)} target="_blank" rel="noopener noreferrer">
+                  SingleCare
+                </a>
+              </div>
+            )}
           </div>
 
         </div>

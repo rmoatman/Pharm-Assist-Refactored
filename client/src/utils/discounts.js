@@ -10,17 +10,23 @@ export function drugSearchName(title = '') {
   return base || String(title).trim();
 }
 
-// GoodRx search handles any term (brand or generic, with or without the salt).
-export function goodRxUrl(title) {
-  return `https://www.goodrx.com/search?query=${encodeURIComponent(drugSearchName(title))}`;
-}
-
-// SingleCare uses /prescription/<slug>; use the first word (the main ingredient).
-export function singleCareUrl(title) {
-  const slug = drugSearchName(title)
+// Turn a drug name into a URL slug using the first word (the main ingredient),
+// e.g. "Warfarin sodium" -> "warfarin". Both sites key their drug pages on this.
+function drugSlug(title) {
+  return drugSearchName(title)
     .split(/\s+/)[0]
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
-  return `https://www.singlecare.com/prescription/${slug}`;
+}
+
+// GoodRx: link straight to the drug's price page (goodrx.com/<drug>) so the
+// medication is already selected — no search step needed.
+export function goodRxUrl(title) {
+  return `https://www.goodrx.com/${drugSlug(title)}`;
+}
+
+// SingleCare: link to the drug's price page (/prescription/<drug>).
+export function singleCareUrl(title) {
+  return `https://www.singlecare.com/prescription/${drugSlug(title)}`;
 }
