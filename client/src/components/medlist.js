@@ -312,7 +312,7 @@ export default function MedList() {
                                     documentTitle="Medication List"
                                 />
                                 {/* Opens the mail app with the list pre-filled to the email on file. */}
-                                <button type="button" className="btn btn-outline-secondary mb-3 ms-3" onClick={emailMedList}>
+                                <button type="button" className="btn btn-outline-secondary mb-3" style={{ marginLeft: '0.3in' }} onClick={emailMedList}>
                                     Email My List
                                 </button>
                             </div>
@@ -330,7 +330,7 @@ export default function MedList() {
                         {/* Sort control for the on-screen list (shown when there's more than one med). */}
                         {Array.isArray(medlist) && medlist.length > 1 && (
                             <div className="mb-2">
-                                <label htmlFor="sortBy" className="me-2">Sort by:</label>
+                                <label htmlFor="sortBy" className="me-3">Sort by:</label>
                                 <select
                                     id="sortBy"
                                     className="form-select d-inline-block w-auto"
