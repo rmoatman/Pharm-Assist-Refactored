@@ -66,12 +66,12 @@ const handleFormSubmit = async (event) => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light App-header align-items-end">
+    <nav className="navbar navbar-expand-lg navbar-light App-header align-items-center">
       {/* Brand link on the left -- clicking it returns to the home page.
-          Shows the logo image (public/Pharm-Logo.png). Note the capital "L":
-          the filename must match exactly on case-sensitive hosts (Render). */}
+          Shows the wordmark logo (public/Pharm-Wordmark.png). The filename must
+          match exactly on case-sensitive hosts (Render). */}
       <Link className="navbar-brand" to="/">
-        <img src={process.env.PUBLIC_URL + "/Pharm-Logo.png"} alt="Pharm-Assist" style={{ height: '50px', width: 'auto' }} />
+        <img src={process.env.PUBLIC_URL + "/Pharm-Wordmark.png"} alt="Pharm-Assist" style={{ height: '150px', width: 'auto' }} />
       </Link>
       {/* Hamburger toggle button (Bootstrap) shown on small screens to expand/collapse the menu */}
       {/* Hamburger toggle (small screens). Toggled via React state — Bootstrap 5's
@@ -81,16 +81,12 @@ const handleFormSubmit = async (event) => {
       </button>
       <div className={`collapse navbar-collapse${navOpen ? ' show' : ''}`} id="navbarSupportedContent">
         <ul className="navbar-nav mr-auto">
-          {/* Only show Sign Up link when NOT logged in */}
+          {/* Only show Sign Up link when NOT logged in. (No separate Log In link —
+              the inline login form on the right handles logging in.) Colored to
+              match the "Sign up" link on the home page's blue CTA banner. */}
           {loggedIn === false && (
           <li className="nav-item">
-            <Link className="navbar-brand" to="/sign-up" onClick={() => setNavOpen(false)}>Sign Up</Link>
-          </li>
-          )}
-          {/* Only show Log In link when NOT logged in */}
-          {loggedIn === false && (
-          <li className="nav-item">
-            <Link className="navbar-brand" to="/login" onClick={() => setNavOpen(false)}>Log In</Link>
+            <Link className="navbar-brand" to="/sign-up" style={{ color: '#007bff' }} onClick={() => setNavOpen(false)}>Sign Up</Link>
           </li>
           )}
           {/* Only show Med List link when logged IN */}
@@ -119,7 +115,7 @@ const handleFormSubmit = async (event) => {
             <input type="text" className="form-control mb-2 mb-lg-0 mr-lg-2" id="inputEmail" placeholder="Email" onChange={(e) => setEmail(e.target.value)} value={email}/>
             {/* Password input -- updates the "password" state */}
             <input type="password" className="form-control mb-2 mb-lg-0 mr-lg-2" id="inputPassword4" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password}/>
-            <button className="btn btn-success" type="submit">Login</button>
+            <button className="btn btn-success" type="submit">Log In</button>
           </form>
           )}
           {/* When logged IN: show a Log Out button that runs handleLogOut */}

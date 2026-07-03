@@ -14,7 +14,15 @@
 }
 
 .App-header {
-  background-color: #A2C4C9;
+  background-color: #ffffff;
+  /* Thick bottom line separating the nav from the page. Matches the Sign Up
+     banner color used on the home page (above the interaction/price fields). */
+  border-bottom: 8px solid #A2C4C9;
+}
+
+/* Keep the nav text links clearly visible on the white navbar background. */
+.App-header .navbar-brand {
+  color: #212529;
 }
 
 .App-link {
