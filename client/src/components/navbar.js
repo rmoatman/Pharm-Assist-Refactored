@@ -56,13 +56,14 @@ const handleFormSubmit = async (event) => {
   }
 
   return (
-    <nav className="navbar navbar-expand-lg App-header align-items-end">
-      {/* Brand link on the left -- clicking it returns to the home page */}
-      <Link className="navbar-brand" to="/" style={{ fontSize: '2.5rem' }}><strong>Pharm-Assist</strong></Link>
+    <nav className="navbar navbar-expand-lg navbar-light App-header align-items-end">
+      {/* Brand link on the left -- clicking it returns to the home page.
+          Font scales down on narrow phones so it doesn't crowd out the hamburger. */}
+      <Link className="navbar-brand" to="/" style={{ fontSize: 'clamp(1.5rem, 6vw, 2.5rem)' }}><strong>Pharm-Assist</strong></Link>
       {/* Hamburger toggle button (Bootstrap) shown on small screens to expand/collapse the menu */}
       {/* Hamburger toggle (small screens). Toggled via React state — Bootstrap 5's
           data-bs-* collapse needs Bootstrap's JS, which this app doesn't load. */}
-      <button className="navbar-toggler" type="button" onClick={() => setNavOpen(!navOpen)} aria-controls="navbarSupportedContent" aria-expanded={navOpen} aria-label="Toggle navigation">
+      <button className="navbar-toggler" type="button" onClick={() => setNavOpen(!navOpen)} aria-controls="navbarSupportedContent" aria-expanded={navOpen} aria-label="Toggle navigation" style={{ border: '1px solid rgba(0,0,0,0.4)' }}>
         <span className="navbar-toggler-icon"></span>
       </button>
       <div className={`collapse navbar-collapse${navOpen ? ' show' : ''}`} id="navbarSupportedContent">
