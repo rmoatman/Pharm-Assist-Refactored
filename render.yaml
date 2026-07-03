@@ -1,0 +1,20 @@
+# Render Blueprint — deploys the Pharm-Assist monolith:
+# the Express API and the built React app served together from one web service.
+#
+# To use: in the Render dashboard choose  New +  ->  Blueprint  ->  connect this repo.
+# Render reads this file, builds, and prompts you for the one secret it needs
+# (MONGODB_URI). Node version comes from the .node-version file.
+services:
+  - type: web
+    name: pharm-assist-refactored
+    runtime: node
+    plan: free                         # free tier: sleeps after ~15 min idle (slow first hit)
+    buildCommand: npm install && npm run build
+    startCommand: npm start            # node server/index.js (serves API + client/build)
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true            # Render generates a strong secret once and keeps it
+      - key: MONGODB_URI
+        sync: false                    # you paste your MongoDB Atlas connection string at deploy
