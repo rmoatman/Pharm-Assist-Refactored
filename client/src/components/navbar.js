@@ -117,7 +117,7 @@ const handleFormSubmit = async (event) => {
               ~0.5in to its left (mr-lg-5 = 3rem = 0.5in, desktop only), then the
               Log Out button. Med List is hidden while already on the medication page. */}
           {loggedIn === true && location.pathname !== '/med-list' && (
-          <Link to="/med-list" className="btn btn-success mt-2 mt-lg-0 mr-lg-5" onClick={() => setNavOpen(false)}>My Medication List</Link>
+          <Link to="/med-list" className="btn btn-success mt-2 mt-lg-0 mr-lg-5 medlist-nav-btn" onClick={() => setNavOpen(false)}>My Medication List</Link>
           )}
           {loggedIn === true && (
           <button onClick={handleLogOut} className="btn btn-success mt-2 mt-lg-0" type="submit">Log Out</button>

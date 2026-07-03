@@ -25,6 +25,13 @@
   color: #212529;
 }
 
+/* Below the desktop breakpoint (collapsed/mobile nav) the My Medication List
+   and Log Out buttons sit side by side, so add a .15in gap between them.
+   At lg+ the .5in gap comes from the button's mr-lg-5 class instead. */
+@media (max-width: 991.98px) {
+  .medlist-nav-btn { margin-right: 0.15in; }
+}
+
 /* Brand logo: 150px tall on desktop, but scaled down on smaller screens so it
    never runs past the right margin next to the hamburger. width:auto keeps the
    aspect ratio (no distortion). */
