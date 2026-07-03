@@ -171,9 +171,10 @@ export default function About() {
             {/* Spacer aligns the buttons with the other section's button on wide (md+) screens.
                 Hidden on phones (where the sections stack) so the input sits right above the buttons. */}
             <div className="mb-3 d-none d-md-block" style={{ height: '38px' }} aria-hidden="true"></div>
-            {/* Two buttons that open the drug's price page on each site. Side by side
-                with a 0.3in gap; they wrap to separate lines on very narrow screens. */}
-            <div className="d-flex flex-wrap mb-2 mt-2" style={{ gap: '0.3in' }}>
+            {/* Two buttons that open the drug's price page on each site. Side by side with a
+                0.3in gap on wide screens; when they stack on phones, the vertical gap is 1rem
+                to match the space above the first button. */}
+            <div className="d-flex flex-wrap mb-2 mt-2" style={{ columnGap: '0.3in', rowGap: '1rem' }}>
               <button
                 type="button"
                 className="btn btn-outline-info"
