@@ -88,7 +88,7 @@ export default function About() {
             style={{ backgroundColor: "#A2C4C9" }}
           >
             <strong>
-              <Link to="/sign-up">Sign up</Link> to customize your medication
+              <Link to="/sign-up">Sign up</Link> to enter and save your medication
               schedule!
             </strong>
           </div>
