@@ -318,8 +318,9 @@ export default function MedList() {
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="mt-4 mb-4">Your Medication List</h1>
-                        {/* Print + Email buttons on the left, "Add a Medication" button on the right. */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        {/* Print + Email buttons on the left, "Add a Medication" button on the right.
+                            Wraps on small screens so the buttons don't overflow. */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                             <div>
                                 {/* Print / Save-as-PDF button: prints the off-screen PrintableMedList below. */}
                                 <ReactToPrint

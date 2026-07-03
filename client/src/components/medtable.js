@@ -13,6 +13,9 @@ import { goodRxUrl, singleCareUrl } from '../utils/discounts'; // Links to presc
 // The schedule fields that make up a medication's dosing schedule.
 const SCHEDULE_FIELDS = ['morning', 'afternoon', 'night', 'weekly', 'as_needed'];
 
+// Human-readable labels for the schedule fields (used by the mobile card view).
+const FIELD_LABELS = { morning: 'Morning', afternoon: 'Afternoon', night: 'Night', weekly: 'Weekly', as_needed: 'As needed' };
+
 // Pins the Actions (Edit/Remove) column to the right edge so it stays visible
 // even when the wide table scrolls horizontally on smaller screens.
 const stickyActions = {
@@ -194,18 +197,93 @@ export default function MedTable(props) {
         });
     };
 
-    return (
-        // table-responsive keeps the wide table within the container width (scrolls
-        // horizontally if needed) so it lines up with the rest of the page.
-        <div className="table-responsive">
-            <table className="table table-striped">
-                <thead>
-                    <tr>{renderHeader()}</tr>
-                </thead>
-                <tbody>
-                    {displayMeds()}
-                </tbody>
-            </table>
+    // ----- Mobile card view (shown on small screens instead of the wide table) -----
+
+    // The schedule as labeled checkboxes (editable while editing, else read-only).
+    const scheduleChecks = (med, isEditing) => (
+        <div className="d-flex flex-wrap" style={{ gap: '4px 16px' }}>
+            {SCHEDULE_FIELDS.map((field) => (
+                <div className="form-check" key={field}>
+                    <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={`card_${med._id}_${field}`}
+                        checked={isEditing ? !!draft[field] : !!med[field]}
+                        onChange={isEditing ? () => toggleDraft(field) : undefined}
+                        readOnly={!isEditing}
+                    />
+                    <label className="form-check-label" htmlFor={`card_${med._id}_${field}`}>{FIELD_LABELS[field]}</label>
+                </div>
+            ))}
         </div>
+    );
+
+    // Edit/Remove (or Save/Cancel) buttons, side by side, for a card.
+    const cardActions = (med, isEditing) => (isEditing ? (
+        <>
+            <button type="button" className="btn btn-outline-success btn-sm me-2" onClick={() => saveEdit(med._id)}>Save</button>
+            <button type="button" className="btn btn-outline-secondary btn-sm" onClick={cancelEdit}>Cancel</button>
+        </>
+    ) : (
+        <>
+            <button type="button" className="btn btn-outline-primary btn-sm me-2" onClick={() => startEdit(med)}>Edit</button>
+            <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => onDelete(med.title)}>Remove</button>
+        </>
+    ));
+
+    // One card per medication.
+    const renderCards = () => {
+        if (!medlist || medlist.length === 0) {
+            return <h2>no meds!</h2>;
+        }
+        return medlist.map((med) => {
+            const isEditing = editingId === med._id;
+            return (
+                <div className="card mb-3" key={med._id}>
+                    <div className="card-body">
+                        <h5 className="card-title mb-1"><strong>{med.title}</strong></h5>
+                        {info[med.title]?.use && (
+                            <div style={{ fontSize: '0.9em', color: '#333', fontStyle: 'italic' }}>{info[med.title].use}</div>
+                        )}
+                        {info[med.title]?.description && (
+                            <div style={{ fontSize: '0.85em', color: '#555', marginTop: '6px' }}>{info[med.title].description}</div>
+                        )}
+                        <div className="mt-3 mb-2">
+                            <div className="fw-bold mb-1" style={{ fontSize: '0.85em' }}>Schedule</div>
+                            {scheduleChecks(med, isEditing)}
+                        </div>
+                        <div className="mt-2">{cardActions(med, isEditing)}</div>
+                        <div style={{ fontSize: '0.85em', marginTop: '10px' }}>
+                            💲 Discounts:{' '}
+                            <a href={goodRxUrl(med.title)} target="_blank" rel="noopener noreferrer">GoodRx</a>
+                            {' · '}
+                            <a href={singleCareUrl(med.title)} target="_blank" rel="noopener noreferrer">SingleCare</a>
+                        </div>
+                    </div>
+                </div>
+            );
+        });
+    };
+
+    return (
+        <>
+            {/* Desktop / tablet (md and up): the full table. table-responsive keeps it
+                within the container width; horizontal scroll only if truly needed. */}
+            <div className="table-responsive d-none d-md-block">
+                <table className="table table-striped">
+                    <thead>
+                        <tr>{renderHeader()}</tr>
+                    </thead>
+                    <tbody>
+                        {displayMeds()}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Phones (below md): a stacked card per medication instead of the wide table. */}
+            <div className="d-md-none">
+                {renderCards()}
+            </div>
+        </>
     );
 }
