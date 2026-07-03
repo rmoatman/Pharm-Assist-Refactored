@@ -53,7 +53,7 @@ export default function About() {
       {/* Welcome / intro section: static marketing text describing the app */}
       <div className="container">
         <div className="row">
-          <div className="col-md-12 m-5">
+          <div className="col-md-12 m-3 m-md-5">
             <h1>Hello and welcome to Pharm-Assist!</h1>
             <p>
               Pharm-Assist is a visual directory to help you recognize and
@@ -170,19 +170,19 @@ export default function About() {
             </div>
             {/* Spacer matching the other section's second input, so the buttons line up. */}
             <div className="mb-3" style={{ height: '38px' }} aria-hidden="true"></div>
-            {/* Two side-by-side buttons that open the drug's price page on each site. */}
-            <div>
+            {/* Two buttons that open the drug's price page on each site. Side by side
+                with a 0.3in gap; they wrap to separate lines on very narrow screens. */}
+            <div className="d-flex flex-wrap mb-2 mt-2" style={{ gap: '0.3in' }}>
               <button
                 type="button"
-                className="btn btn-outline-info mb-2 mt-2"
+                className="btn btn-outline-info"
                 onClick={() => priceDrug.trim() && window.open(goodRxUrl(priceDrug), '_blank', 'noopener')}
               >
                 Search GoodRX!
               </button>
               <button
                 type="button"
-                className="btn btn-outline-info mb-2 mt-2"
-                style={{ marginLeft: '0.3in' }}
+                className="btn btn-outline-info"
                 onClick={() => priceDrug.trim() && window.open(singleCareUrl(priceDrug), '_blank', 'noopener')}
               >
                 Search SingleCare!
