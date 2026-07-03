@@ -4,7 +4,7 @@
 // refreshes the logged-in state, and redirects to the medication list.
 
 import React, { useContext, useState } from 'react'; // useState = local state; useContext = read shared auth state.
-import { useHistory } from "react-router-dom"; // useHistory lets us navigate to another page in code.
+import { useHistory, Link } from "react-router-dom"; // useHistory = navigate in code; Link = clickable route link.
 // import { createUser } from '../utils/API'; // (Unused/old import, left commented out.)
 import AuthContext from "../context/authcontext.js"; // Shared login state and helpers.
 import axios from "axios"; // HTTP client used to call the REST API.
@@ -14,6 +14,8 @@ export default function SignUp() {
   const [ password, setPassword ] = useState('');   // Password field value.
   const [ firstName, setFirstName ] = useState(''); // First name field value.
   const [ lastName, setLastName ] = useState('');   // Last name field value.
+  const [ errorMessage, setErrorMessage ] = useState(''); // Server-side error to show (e.g. email already in use).
+  const [ emailTaken, setEmailTaken ] = useState(false);  // True when the email already has an account (show Log In link).
 
   const { getLoggedIn } = useContext(AuthContext); // getLoggedIn() re-checks the server for the current login status.
   const history = useHistory();                    // Used to redirect after a successful sign up.
@@ -21,6 +23,8 @@ export default function SignUp() {
   // Runs when the Sign Up form is submitted.
   const handleFormSubmit = async (event) => {
     event.preventDefault(); // Prevent the default page reload.
+    setErrorMessage(''); // Clear any previous error before trying again.
+    setEmailTaken(false);
 
       try {
       // Bundle all the form fields into one object to send to the server.
@@ -40,7 +44,15 @@ export default function SignUp() {
       await getLoggedIn();       // Update app-wide login state (the new account is now logged in).
       history.push("/med-list"); // Send the user to their medication list.
     } catch (err) {
-      console.error(err); // Log any error (e.g. email already taken) for debugging.
+      console.error(err); // Log the real error for debugging.
+      // Show the server's message when we have one (e.g. "existing account
+      // associated with this email address"), otherwise a generic fallback.
+      const serverMessage = err.response?.data?.errorMessage;
+      setErrorMessage(serverMessage || 'Could not create your account. Please try again.');
+      // If the email is already registered, offer a path to log in instead.
+      if (serverMessage && /existing account/i.test(serverMessage)) {
+        setEmailTaken(true);
+      }
     }
   };
 
@@ -72,6 +84,17 @@ export default function SignUp() {
         <input type="text" className="form-control" id="inputLName" placeholder="Last Name" onChange={(e) => setLastName(e.target.value)} value={lastName}/>
       </div>
 
+
+      {/* Error message (e.g. email already in use). When the email already has an
+          account, also offer a link to log in instead. */}
+      {errorMessage && (
+        <div className="col-12">
+          <p className="text-danger mb-1">{errorMessage}</p>
+          {emailTaken && (
+            <p className="mb-0">Already have an account? <Link to="/login">Log in instead</Link>.</p>
+          )}
+        </div>
+      )}
 
       {/* <div className="col-12">
         <button type="submit" className="btn btn-primary">Sign in</button>
