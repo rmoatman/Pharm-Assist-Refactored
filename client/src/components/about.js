@@ -137,7 +137,7 @@ export default function About() {
               </Form.Group>
               {/* End of Mediation 2 to Compare Form */}
 
-              <button className="btn btn-outline-info mb-2 mt-2" type="submit">
+              <button className="btn btn-outline-info mb-2" type="submit">
                 Check for Interactions!
               </button>
 
