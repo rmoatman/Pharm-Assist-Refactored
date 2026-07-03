@@ -68,8 +68,11 @@ const handleFormSubmit = async (event) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light App-header align-items-end">
       {/* Brand link on the left -- clicking it returns to the home page.
-          Font scales down on narrow phones so it doesn't crowd out the hamburger. */}
-      <Link className="navbar-brand" to="/" style={{ fontSize: 'clamp(1.5rem, 6vw, 2.5rem)' }}><strong>Pharm-Assist</strong></Link>
+          Shows the logo image (public/Pharm-Logo.png). Note the capital "L":
+          the filename must match exactly on case-sensitive hosts (Render). */}
+      <Link className="navbar-brand" to="/">
+        <img src={process.env.PUBLIC_URL + "/Pharm-Logo.png"} alt="Pharm-Assist" style={{ height: '50px', width: 'auto' }} />
+      </Link>
       {/* Hamburger toggle button (Bootstrap) shown on small screens to expand/collapse the menu */}
       {/* Hamburger toggle (small screens). Toggled via React state — Bootstrap 5's
           data-bs-* collapse needs Bootstrap's JS, which this app doesn't load. */}
