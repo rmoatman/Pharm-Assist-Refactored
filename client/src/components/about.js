@@ -55,11 +55,6 @@ export default function About() {
         <div className="row">
           <div className="col-md-12 m-3 m-md-5">
             <h1>Welcome to Pharm-Assist!</h1>
-            <p>
-              Pharm-Assist organizes your daily medications, provides an electronic,
-              paper and email of your medicines on demand, alerts you to potential
-              interactions with other medications, and checks for discounts!
-            </p>
             <ul>
               <li>Do you take a variety of medications every day?</li>
               <li>
@@ -73,9 +68,9 @@ export default function About() {
               <li>Do you want to look for discounts?</li>
             </ul>
             <p>
-              Pharm-Assist provides your daily medication schedule and can alert you when
-              you may need to contact a professional about medication
-              interaction.
+              Pharm-Assist organizes your daily medications, provides an electronic,
+              paper and email of your medications on demand, alerts you to potential
+              interactions with other medications, and checks for discounts!
             </p>
           </div>
         </div>
