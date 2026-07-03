@@ -350,10 +350,13 @@ export default function MedList() {
                                     <option value="mailto">Other (default app)</option>
                                 </select>
                             </div>
-                            {/* Smooth-scrolls down to the Add a Medication section. */}
+                            {/* Smooth-scrolls down to the Add a Medication section.
+                                marginLeft:auto pushes this button to the right edge of the
+                                row while Print / Email My List stay left-aligned. */}
                             <button
                                 type="button"
                                 className="btn btn-outline-info mb-3"
+                                style={{ marginLeft: 'auto' }}
                                 onClick={() => document.getElementById('add-medication')?.scrollIntoView({ behavior: 'smooth' })}
                             >
                                 Add a Medication

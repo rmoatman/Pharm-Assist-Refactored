@@ -77,7 +77,7 @@ const handleFormSubmit = async (event) => {
         <span className="navbar-toggler-icon"></span>
       </button>
       <div className={`collapse navbar-collapse${navOpen ? ' show' : ''}`} id="navbarSupportedContent">
-        <ul className="navbar-nav me-auto">
+        <ul className="navbar-nav mr-auto">
           {/* Only show Sign Up link when NOT logged in */}
           {loggedIn === false && (
           <li className="nav-item">
@@ -96,12 +96,13 @@ const handleFormSubmit = async (event) => {
             <Link className="navbar-brand" to="/med-list" onClick={() => setNavOpen(false)}>Med List</Link>
           </li>
           )}
-          {/* Always available: jump to the home page's interaction / price checkers
-              (they're below the fold on mobile, so this makes them easy to reach). */}
-          <li className="nav-item">
+          {/* Jump to the home page's interaction / price checkers. Only shown in the
+              collapsed mobile menu (d-lg-none) — on desktop the checkers are visible
+              on the home page, so these shortcuts would be redundant clutter. */}
+          <li className="nav-item d-lg-none">
             <Link className="navbar-brand" to="/" onClick={() => goToSection('interactions')}>Check Interactions</Link>
           </li>
-          <li className="nav-item">
+          <li className="nav-item d-lg-none">
             <Link className="navbar-brand" to="/" onClick={() => goToSection('prices')}>Check Prices</Link>
           </li>
         </ul>
