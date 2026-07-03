@@ -55,6 +55,16 @@ const handleFormSubmit = async (event) => {
     history.push("/");   // Send the user back to the home page.
   }
 
+  // Jump to a checker section on the home page (handy on mobile, where the
+  // interaction and price checkers sit below the fold). Closes the mobile menu,
+  // then scrolls once the home page has had a moment to render.
+  const goToSection = (id) => {
+    setNavOpen(false);
+    setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }, 150);
+  };
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light App-header align-items-end">
       {/* Brand link on the left -- clicking it returns to the home page.
@@ -86,6 +96,14 @@ const handleFormSubmit = async (event) => {
             <Link className="navbar-brand" to="/med-list" onClick={() => setNavOpen(false)}>Med List</Link>
           </li>
           )}
+          {/* Always available: jump to the home page's interaction / price checkers
+              (they're below the fold on mobile, so this makes them easy to reach). */}
+          <li className="nav-item">
+            <Link className="navbar-brand" to="/" onClick={() => goToSection('interactions')}>Check Interactions</Link>
+          </li>
+          <li className="nav-item">
+            <Link className="navbar-brand" to="/" onClick={() => goToSection('prices')}>Check Prices</Link>
+          </li>
         </ul>
           {/* When NOT logged in: inline login form. Stacks vertically on small screens,
               sits in a row on large screens. */}

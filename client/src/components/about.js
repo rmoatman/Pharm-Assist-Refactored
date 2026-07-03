@@ -101,7 +101,7 @@ export default function About() {
         <div className="row">
 
           {/* div Holding Two Medication Input Fields */}
-          <div className="col-md-6 pt-5">
+          <div className="col-md-6 pt-5" id="interactions">
 
             {/* Equal-height header so the first input lines up with the other section. */}
             <div style={{ minHeight: '90px' }}>
@@ -155,7 +155,7 @@ export default function About() {
           {/* End of div Holding Two Medication Input Fields */}
 
           {/* Prescription price check — public, no sign-in needed. */}
-          <div className="col-md-6 pt-5">
+          <div className="col-md-6 pt-5" id="prices">
             {/* Equal-height header so the input lines up with the other section. */}
             <div style={{ minHeight: '90px' }}>
               <h3>Check Prescription Prices</h3>
