@@ -7,6 +7,9 @@ _Refactored by R. Oatman with assistance from Claude Code (Anthropic) — July 2
 <img src="./client/src/images/screenshot-1.png" alt="Image of Pharm-Assist homepage">
 <br><br>
 
+<img src="./client/src/images/screenshot-2.png" alt="Image of Pharm-Assist Medication List">
+<br><br>
+
 Pharm-Assist is not currently deployed. It runs locally (see [Local Installation](#local-installation)).
 <br><br>
 
