@@ -14,7 +14,6 @@ export default function SignUp() {
   const [ password, setPassword ] = useState('');   // Password field value.
   const [ firstName, setFirstName ] = useState(''); // First name field value.
   const [ lastName, setLastName ] = useState('');   // Last name field value.
-  const [ username, setUserName ] = useState('');   // Username field value.
 
   const { getLoggedIn } = useContext(AuthContext); // getLoggedIn() re-checks the server for the current login status.
   const history = useHistory();                    // Used to redirect after a successful sign up.
@@ -28,7 +27,6 @@ export default function SignUp() {
       const registerData = {
         firstName,
         lastName,
-        username,
         email,
         password,
       };
@@ -57,14 +55,8 @@ export default function SignUp() {
         <input type="email"  className="form-control" id="inputEmail4" onChange={(e) => setEmail(e.target.value)} value={email} />
       </div>
 
-      {/* Username input -- updates the "username" state */}
-      <div className="col-6">
-        <label htmlFor="inputUsername" className="form-label">Username</label>
-        <input type="text" className="form-control" id="inputUsername" placeholder="Username" onChange={(e) => setUserName(e.target.value)} value={username}/>
-      </div>
-
       {/* Password input -- updates the "password" state */}
-      <div className="col-md-6">
+      <div className="col-md-12">
         <label htmlFor="inputPassword" className="form-label">Password</label>
         <input type="password" className="form-control" id="inputPassword4" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password}/>
       </div>

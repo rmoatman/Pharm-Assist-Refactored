@@ -40,7 +40,7 @@ const { authMiddleware } = require('../../utils/auth');
 // POST /api/users/register  -> create a new account.
 router.route('/register').post(register);
 
-// POST /api/users/login     -> log in with username/email + password.
+// POST /api/users/login     -> log in with email + password.
 router.route('/login').post(login);
 
 // GET  /api/users/logout    -> log the current user out.

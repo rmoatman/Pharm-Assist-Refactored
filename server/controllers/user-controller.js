@@ -26,14 +26,13 @@ const cookieOptions = {
 
 // Export an object where each key is a controller function used by the routes.
 module.exports = {
-  // getSingleUser: look up ONE user, either by the logged-in user's id, by an
-  // id in the URL params, or by a username in the URL params.
+  // getSingleUser: look up ONE user, either by the logged-in user's id or by an
+  // id in the URL params.
   // Inputs: { user, params } from the request; res to send the response.
   async getSingleUser({ user = null, params }, res) {
     const foundUser = await User.findOne({
-      // $or means "match ANY of these": use the logged-in user's _id if present,
-      // otherwise the id from the URL, OR match on the username from the URL.
-      $or: [{ _id: user ? user._id : params.id }, { username: params.username }],
+      // Use the logged-in user's _id if present, otherwise the id from the URL.
+      _id: user ? user._id : params.id,
     });
 
     if (!foundUser) {
@@ -49,8 +48,8 @@ module.exports = {
   // Input: request body containing the new user's details; res for the response.
   async register({ body }, res) {
     // Basic input validation before we touch the database.
-    const { firstName, lastName, username, email, password } = body;
-    if (!firstName || !lastName || !username || !email || !password) {
+    const { firstName, lastName, email, password } = body;
+    if (!firstName || !lastName || !email || !password) {
       return res.status(400).json({ errorMessage: "All fields are required." });
     }
     if (!/.+@.+\..+/.test(email)) {
@@ -95,7 +94,7 @@ module.exports = {
     if(!user) {
       // Use 401 for BOTH unknown email and wrong password: consistent status
       // codes, and we avoid revealing which email addresses have accounts.
-      return res.status(401).json({ errorMessage: "Incorrect username or password" });
+      return res.status(401).json({ errorMessage: "Incorrect email or password" });
     }
 
     // Compare the submitted password to the stored (hashed) one.
@@ -104,7 +103,7 @@ module.exports = {
 
     if (!correctPw) {
       // Wrong password -> reject with 401 Unauthorized
-      return res.status(401).json({ message: "Incorrect username or password" });
+      return res.status(401).json({ message: "Incorrect email or password" });
     }
 
     const token = signToken(user); // Password is correct -> create a login token

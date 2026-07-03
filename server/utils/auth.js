@@ -30,7 +30,7 @@ module.exports = {
     }
 
     try {
-      // Verify the token; "data" is the payload we stored (username, email, _id).
+      // Verify the token; "data" is the payload we stored (email, _id).
       // maxAge enforces the expiration window.
       const { data } = jwt.verify(token, secret, { maxAge: expiration });
       req.user = data; // Attach the user info to the request so route handlers can use it
@@ -43,10 +43,10 @@ module.exports = {
   },
 
   // signToken: create a new JWT for a user.
-  // Input: an object with username, email, and _id (extra fields are ignored).
+  // Input: an object with email and _id (extra fields are ignored).
   // Returns: a signed token string that expires after `expiration`.
-  signToken: function ({ username, email, _id }) {
-    const payload = { username, email, _id }; // The data to embed inside the token
+  signToken: function ({ email, _id }) {
+    const payload = { email, _id }; // The data to embed inside the token
 
     // Wrap the payload under a "data" key and sign it with our secret.
     return jwt.sign({ data: payload }, secret, { expiresIn: expiration });

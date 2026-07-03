@@ -36,12 +36,6 @@ const UserSchema = new Schema(
       required: true,
       trim: true
     },
-    // The login username shown/used to identify the account.
-    username: {
-      type: String,
-      required: true,
-      trim: true
-    },
     // The password. Stored HASHED (not plain text) thanks to the
     // pre('save') hook below.
     password: {

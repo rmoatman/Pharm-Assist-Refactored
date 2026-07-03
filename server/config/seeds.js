@@ -22,7 +22,6 @@ db.once('open', async () => {
         users.push({
             firstName: faker.name.firstName(),      // random first name
             lastName: faker.name.lastName(),        // random last name
-            username: faker.internet.userName(),    // random username
             email: faker.internet.email(),          // random email address
             password: faker.internet.password(),    // random password (will be hashed by the User model)
             medList: []                             // start each user with an empty medication list
