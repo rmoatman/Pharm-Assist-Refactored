@@ -71,7 +71,7 @@ const handleFormSubmit = async (event) => {
           Shows the wordmark logo (public/Pharm-Wordmark.png). The filename must
           match exactly on case-sensitive hosts (Render). */}
       <Link className="navbar-brand" to="/">
-        <img src={process.env.PUBLIC_URL + "/Pharm-Wordmark.png"} alt="Pharm-Assist" style={{ height: '150px', width: 'auto' }} />
+        <img src={process.env.PUBLIC_URL + "/Pharm-Wordmark.png"} alt="Pharm-Assist" className="navbar-logo" />
       </Link>
       {/* Hamburger toggle button (Bootstrap) shown on small screens to expand/collapse the menu */}
       {/* Hamburger toggle (small screens). Toggled via React state — Bootstrap 5's
