@@ -104,7 +104,7 @@ export default function SignUp() {
       under the BS4 CSS this app loads). */}
   <div className="col-12 mt-3">
   <button className="btn btn-outline-info" type="submit">
-                Sign In
+                Sign Up
               </button>
 
               </div>

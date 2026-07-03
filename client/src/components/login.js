@@ -60,8 +60,9 @@ export default function Login() {
           </div>
         )}
 
-        {/* Submit button that triggers handleFormSubmit */}
-        <div className="col-12">
+        {/* Submit button that triggers handleFormSubmit. mt-3 adds space above it
+            (the form's BS5 g-3 gutter is a no-op under the vendored BS4 CSS). */}
+        <div className="col-12 mt-3">
           <button className="btn btn-outline-info" type="submit">
             Log In
           </button>

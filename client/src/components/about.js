@@ -54,7 +54,7 @@ export default function About() {
       <div className="container">
         <div className="row">
           <div className="col-md-12 m-3 m-md-5">
-            <h1 className="text-center text-md-left">Welcome to Pharm-Assist!</h1>
+            <h1 className="text-center text-md-left">Welcome!</h1>
             <ul>
               <li>Do you take a variety of medications every day?</li>
               <li>
@@ -75,7 +75,7 @@ export default function About() {
           </div>
         </div>
       </div>
-      {/* Colored call-to-action banner with a link to the sign-up page */}
+      {/* Colored call-to-action banner with links to log in or sign up. */}
       <div className="container-fluid">
         <div className="row">
           <div
@@ -83,7 +83,7 @@ export default function About() {
             style={{ backgroundColor: "#A2C4C9" }}
           >
             <strong>
-              <Link to="/sign-up">Sign up</Link> to enter and save your medication
+              <Link to="/login">Log In</Link> or <Link to="/sign-up">Sign up</Link> to enter and save your medication
               schedule!
             </strong>
           </div>
