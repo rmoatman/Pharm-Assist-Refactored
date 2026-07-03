@@ -25,16 +25,21 @@ function AuthContextProvider(props) {
 
   // Asks the server whether the current user is logged in.
   async function getLoggedIn() {
-    // (Old/commented-out URL kept for reference; not used.)
-    // const loggedInRes = await axios.get("http://localhost:5000/auth/loggedIn");
-    // Call the REST API endpoint that reports login status. "await" pauses until
-    // the request finishes and returns the server's response.
-    const loggedInRes = await axios.get(
-      "/api/users/loggedIn"
-    );
-    // Save the server's answer (response .data) into state. Changing state here
-    // re-renders consumers so routes update to match the login status.
-    setLoggedIn(loggedInRes.data);
+    try {
+      // Call the REST API endpoint that reports login status. "await" pauses until
+      // the request finishes and returns the server's response.
+      const loggedInRes = await axios.get("/api/users/loggedIn");
+      // Save the server's answer (response .data) into state. Changing state here
+      // re-renders consumers so routes update to match the login status.
+      setLoggedIn(loggedInRes.data);
+    } catch (err) {
+      // If the check fails (API unreachable, network error, etc.), treat the user
+      // as logged OUT rather than leaving loggedIn stuck at `undefined` — otherwise
+      // the navbar renders neither the logged-in nor logged-out menu (just a blank
+      // bar). Defaulting to false shows the Sign Up / Log In menu.
+      console.error("login-status check failed:", err);
+      setLoggedIn(false);
+    }
   }
 
   // useEffect with an empty dependency array [] runs ONCE, right after the first
