@@ -46,7 +46,7 @@ export default function SignUp() {
 
   return (
     <div className="container">
-      <h3>Sign Up</h3>
+      <h3 className="mt-4">Sign Up</h3>
     {/* Sign-up form -- handleFormSubmit runs on submit */}
     <form onSubmit={handleFormSubmit} className="row g-3">
       {/* Email input -- updates the "email" state as the user types */}
@@ -76,8 +76,10 @@ export default function SignUp() {
       {/* <div className="col-12">
         <button type="submit" className="btn btn-primary">Sign in</button>
       </div> */}
-  {/* Submit button that triggers handleFormSubmit to create the account */}
-  <div className="col-12">
+  {/* Submit button that triggers handleFormSubmit to create the account.
+      mt-3 adds vertical space above it (the form's BS5 g-3 gutter is a no-op
+      under the BS4 CSS this app loads). */}
+  <div className="col-12 mt-3">
   <button className="btn btn-outline-info" type="submit">
                 Sign In
               </button>
