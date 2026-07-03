@@ -115,7 +115,7 @@ const handleFormSubmit = async (event) => {
             <input type="text" className="form-control mb-2 mb-lg-0 mr-lg-2" id="inputEmail" placeholder="Email" onChange={(e) => setEmail(e.target.value)} value={email}/>
             {/* Password input -- updates the "password" state */}
             <input type="password" className="form-control mb-2 mb-lg-0 mr-lg-2" id="inputPassword4" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password}/>
-            <button className="btn btn-success" type="submit">Log In</button>
+            <button className="btn btn-success px-4" type="submit" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>Log In</button>
           </form>
           )}
           {/* When logged IN: show a Log Out button that runs handleLogOut */}
