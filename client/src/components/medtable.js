@@ -28,18 +28,21 @@ const stickyActions = {
 };
 
 export default function MedTable(props) {
-    const { medlist, onDelete, onUpdate, info = {} } = props;
+    const { medlist, onDelete, onUpdate, info = {}, showPurpose = true } = props;
 
     // Which medication row is currently being edited (its _id), or null if none.
     const [editingId, setEditingId] = useState(null);
     // The in-progress schedule while editing a row (a copy of that med's flags).
     const [draft, setDraft] = useState({});
+    // The in-progress medication name while editing a row.
+    const [draftTitle, setDraftTitle] = useState('');
     // The med._id whose "used for" tooltip is currently shown (on hover), or null.
     const [hovered, setHovered] = useState(null);
 
     // Enter edit mode for a med: remember its id and copy its current schedule.
     const startEdit = (med) => {
         setEditingId(med._id);
+        setDraftTitle(med.title || '');
         setDraft({
             morning: !!med.morning,
             afternoon: !!med.afternoon,
@@ -55,9 +58,10 @@ export default function MedTable(props) {
     // Flip one checkbox in the draft schedule.
     const toggleDraft = (field) => setDraft((d) => ({ ...d, [field]: !d[field] }));
 
-    // Save the draft schedule for a med (parent does the API call), then exit edit mode.
+    // Save the draft name + schedule for a med (parent does the API call), then
+    // exit edit mode. An all-whitespace name is ignored server-side.
     const saveEdit = async (medId) => {
-        await onUpdate(medId, draft);
+        await onUpdate(medId, { ...draft, title: draftTitle });
         setEditingId(null);
     };
 
@@ -103,10 +107,22 @@ export default function MedTable(props) {
                 <tr key={med._id}>
                     {/* Medication name, what it's used for, then a spaced-out appearance description. */}
                     <td>
-                        <strong>{med.title}</strong>
+                        {isEditing ? (
+                            <input
+                                type="text"
+                                className="form-control form-control-sm"
+                                style={{ minWidth: '140px' }}
+                                value={draftTitle}
+                                onChange={(e) => setDraftTitle(e.target.value)}
+                                aria-label={`Edit name for ${med.title}`}
+                            />
+                        ) : (
+                            <strong>{med.title}</strong>
+                        )}
                         {/* What the medication is used for, in italics. Clamped to one line;
-                            hovering shows the full text in a larger, readable tooltip. */}
-                        {info[med.title]?.use && (
+                            hovering shows the full text in a larger, readable tooltip.
+                            Hidden when the user turns off "Show purpose". */}
+                        {showPurpose && info[med.title]?.use && (
                             <div
                                 style={{ position: 'relative', maxWidth: '320px' }}
                                 onMouseEnter={() => setHovered(med._id)}
@@ -243,8 +259,20 @@ export default function MedTable(props) {
             return (
                 <div className="card mb-3" key={med._id}>
                     <div className="card-body">
-                        <h5 className="card-title mb-1"><strong>{med.title}</strong></h5>
-                        {info[med.title]?.use && (
+                        <h5 className="card-title mb-1">
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    className="form-control form-control-sm"
+                                    value={draftTitle}
+                                    onChange={(e) => setDraftTitle(e.target.value)}
+                                    aria-label={`Edit name for ${med.title}`}
+                                />
+                            ) : (
+                                <strong>{med.title}</strong>
+                            )}
+                        </h5>
+                        {showPurpose && info[med.title]?.use && (
                             <div style={{ fontSize: '0.9em', color: '#333', fontStyle: 'italic' }}>{info[med.title].use}</div>
                         )}
                         {info[med.title]?.description && (

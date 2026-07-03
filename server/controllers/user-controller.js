@@ -159,22 +159,26 @@ module.exports = {
   // by its subdocument _id (medId), so titles don't have to be unique.
   // Inputs: { user } (from auth), { body: { medId, morning, afternoon, ... } }.
   async updateMed({ user, body }, res) {
-    const { medId, morning, afternoon, night, weekly, as_needed } = body;
+    const { medId, title, morning, afternoon, night, weekly, as_needed } = body;
     try {
+      // Fields to update on the matched medicine. Always update the schedule flags.
+      const set = {
+        'medList.$.morning': !!morning,
+        'medList.$.afternoon': !!afternoon,
+        'medList.$.night': !!night,
+        'medList.$.weekly': !!weekly,
+        'medList.$.as_needed': !!as_needed,
+      };
+      // Only rename the medicine when a non-empty title is sent, so an empty box
+      // can never wipe out the medication's name.
+      if (typeof title === 'string' && title.trim()) {
+        set['medList.$.title'] = title.trim();
+      }
       const updatedUser = await User.findOneAndUpdate(
         // Match this user AND the specific medicine inside their medList array.
         { _id: user._id, 'medList._id': medId },
         // The positional "$" updates the matched medList element's fields.
-        // Coerce each flag to a real boolean so bad input can't store junk.
-        {
-          $set: {
-            'medList.$.morning': !!morning,
-            'medList.$.afternoon': !!afternoon,
-            'medList.$.night': !!night,
-            'medList.$.weekly': !!weekly,
-            'medList.$.as_needed': !!as_needed,
-          },
-        },
+        { $set: set },
         { new: true, runValidators: true } // return the updated doc; enforce schema rules
       );
       if (!updatedUser) {

@@ -113,6 +113,7 @@ export default function MedList() {
     const [lastName, setLastName] = useState('');                  // Logged-in user's last name (for the printout heading).
     const [email, setEmail] = useState('');                        // Logged-in user's email on file (for the Email button).
     const [sortBy, setSortBy] = useState('added');                 // How to sort the on-screen list: 'added' | 'name' | 'time'.
+    const [showPurpose, setShowPurpose] = useState(true);          // Show each drug's "used for" text (off keeps rows short on mobile).
     const [emailProvider, setEmailProvider] = useState('gmail');   // Which email service the "Email My List" button opens.
     const [info, setInfo] = useState({});                          // Map of med title -> { use, description } from the drug-info API.
 
@@ -317,7 +318,7 @@ export default function MedList() {
                 {/* Top section: the medication table. */}
                 <div className="row">
                     <div className="col-md-12">
-                        <h1 className="mt-4 mb-4 text-center">Your Medication List</h1>
+                        <h1 className="mt-4 mb-4 text-center">{firstName ? `${firstName}'s Medication List` : 'Your Medication List'}</h1>
                         {/* All action buttons left-aligned; the email-provider dropdown stays to the
                             right of Email My List. Wraps on small screens so nothing overflows. */}
                         <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
@@ -332,23 +333,28 @@ export default function MedList() {
                                     content={() => printRef.current}
                                     documentTitle="Medication List"
                                 />
-                                {/* Opens the mail app with the list pre-filled to the email on file. */}
-                                <button type="button" className="btn mb-3" style={{ marginLeft: '0.3in', verticalAlign: 'middle', backgroundColor: '#fff', color: '#212529', border: '1px solid #000' }} onClick={emailMedList}>
-                                    Email My List
-                                </button>
-                                {/* Which email service the button opens. */}
-                                <select
-                                    className="custom-select d-inline-block w-auto mb-3"
-                                    style={{ marginLeft: '0.075in', height: 'calc(1.5em + 0.75rem + 2px)', verticalAlign: 'middle' }}
-                                    value={emailProvider}
-                                    onChange={(e) => setEmailProvider(e.target.value)}
-                                    aria-label="Email provider"
-                                >
-                                    <option value="gmail">Gmail</option>
-                                    <option value="outlook">Outlook.com</option>
-                                    <option value="yahoo">Yahoo</option>
-                                    <option value="mailto">Other (default app)</option>
-                                </select>
+                                {/* Email button + its provider dropdown, kept together as one unit.
+                                    On phones the pair wraps to its own line flush-left (ml-0); on
+                                    desktop it sits to the right of Print (ml-md-3). */}
+                                <span className="d-inline-flex align-items-center ml-0 ml-md-3" style={{ gap: '0.075in', verticalAlign: 'middle' }}>
+                                    {/* Opens the mail app with the list pre-filled to the email on file. */}
+                                    <button type="button" className="btn mb-3" style={{ backgroundColor: '#fff', color: '#212529', border: '1px solid #000' }} onClick={emailMedList}>
+                                        Email My List
+                                    </button>
+                                    {/* Which email service the button opens. */}
+                                    <select
+                                        className="custom-select w-auto mb-3"
+                                        style={{ height: 'calc(1.5em + 0.75rem + 2px)' }}
+                                        value={emailProvider}
+                                        onChange={(e) => setEmailProvider(e.target.value)}
+                                        aria-label="Email provider"
+                                    >
+                                        <option value="gmail">Gmail</option>
+                                        <option value="outlook">Outlook.com</option>
+                                        <option value="yahoo">Yahoo</option>
+                                        <option value="mailto">Other (default app)</option>
+                                    </select>
+                                </span>
                             </div>
                             {/* Smooth-scrolls down to the Add a Medication section.
                                 marginLeft:auto pushes this button to the right edge of the
@@ -364,24 +370,42 @@ export default function MedList() {
                         </div>
                         {/* Interaction warnings for the current list (Phase 2). */}
                         <InteractionWarnings interactions={interactions} loading={checkingInteractions} medCount={medlist.length} />
-                        {/* Sort control for the on-screen list (shown when there's more than one med). */}
-                        {Array.isArray(medlist) && medlist.length > 1 && (
-                            <div className="mb-2">
-                                <label htmlFor="sortBy" style={{ marginRight: '0.15in' }}>Sort by:</label>
-                                <select
-                                    id="sortBy"
-                                    className="custom-select d-inline-block w-auto"
-                                    value={sortBy}
-                                    onChange={(e) => setSortBy(e.target.value)}
-                                >
-                                    <option value="added">Added order</option>
-                                    <option value="name">Name (A–Z)</option>
-                                    <option value="time">Time taken</option>
-                                </select>
+                        {/* Sort control plus the "Show purpose" toggle, kept on one line.
+                            The whole row appears once the user has at least one medication;
+                            Sort by: only shows when there's more than one to sort. */}
+                        {Array.isArray(medlist) && medlist.length > 0 && (
+                            <div className="mb-2 d-flex align-items-center flex-wrap" style={{ gap: '6px 20px' }}>
+                                {medlist.length > 1 && (
+                                    <div>
+                                        <label htmlFor="sortBy" style={{ marginRight: '0.15in' }}>Sort by:</label>
+                                        <select
+                                            id="sortBy"
+                                            className="custom-select d-inline-block w-auto"
+                                            value={sortBy}
+                                            onChange={(e) => setSortBy(e.target.value)}
+                                        >
+                                            <option value="added">Added order</option>
+                                            <option value="name">Name (A–Z)</option>
+                                            <option value="time">Time taken</option>
+                                        </select>
+                                    </div>
+                                )}
+                                {/* Toggle the "used for" text under each drug. Off by the user
+                                    keeps rows short on small screens; on brings it back. */}
+                                <div className="form-check mb-0">
+                                    <input
+                                        type="checkbox"
+                                        className="form-check-input"
+                                        id="showPurpose"
+                                        checked={showPurpose}
+                                        onChange={(e) => setShowPurpose(e.target.checked)}
+                                    />
+                                    <label htmlFor="showPurpose" className="form-check-label">Show Medication Purpose</label>
+                                </div>
                             </div>
                         )}
                         {/* Medtable displays the (sorted) meds; onDelete/onUpdate let it remove or edit-schedule a med. */}
-                        <Medtable medlist={rows} onDelete={handleDeleteMed} onUpdate={handleUpdateMed} info={info} />
+                        <Medtable medlist={rows} onDelete={handleDeleteMed} onUpdate={handleUpdateMed} info={info} showPurpose={showPurpose} />
                         {/* Off-screen clean copy used only for printing (kept in the DOM so react-to-print can capture it). */}
                         <div style={{ position: "absolute", left: "-9999px", top: 0 }} aria-hidden="true">
                             <PrintableMedList ref={printRef} meds={Array.isArray(medlist) ? medlist : []} interactions={interactions} firstName={firstName} lastName={lastName} />

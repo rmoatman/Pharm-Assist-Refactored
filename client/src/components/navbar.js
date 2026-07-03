@@ -4,7 +4,7 @@
 //  - Logged IN:  shows a Med List link plus a Log Out button.
 
 import React, { useContext, useState } from 'react'; // useState = local state; useContext = read shared auth state.
-import { useHistory } from "react-router-dom"; // For navigating between pages in code.
+import { useHistory, useLocation } from "react-router-dom"; // For navigating between pages / reading the current route.
 import AuthContext from "../context/authcontext.js"; // Shared login state (loggedIn) and helpers (getLoggedIn).
 import { Link } from 'react-router-dom'; // Clickable links that switch routes without a full reload.
 
@@ -20,6 +20,7 @@ const [ navOpen, setNavOpen ] = useState(false); // Whether the mobile hamburger
 const { loggedIn } = useContext(AuthContext);    // true/false: whether a user is currently logged in.
 const { getLoggedIn } = useContext(AuthContext); // Re-checks the server for the current login status.
 const history = useHistory();                    // Used to redirect after login/logout.
+const location = useLocation();                  // Current route, so we can hide the Med List link while already on it.
 
 //event handling for login button
 // Runs when the inline navbar login form is submitted.
@@ -89,8 +90,9 @@ const handleFormSubmit = async (event) => {
             <Link className="navbar-brand" to="/sign-up" style={{ color: '#007bff' }} onClick={() => setNavOpen(false)}>Sign Up</Link>
           </li>
           )}
-          {/* Only show Med List link when logged IN */}
-          {loggedIn === true && (
+          {/* Only show Med List link when logged IN — and hide it while already on
+              the medication page (no point linking to the page you're viewing). */}
+          {loggedIn === true && location.pathname !== '/med-list' && (
           <li className="nav-item">
             <Link className="navbar-brand" to="/med-list" onClick={() => setNavOpen(false)}>Med List</Link>
           </li>
