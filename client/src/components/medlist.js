@@ -332,6 +332,17 @@ export default function MedList() {
                                     )}
                                     content={() => printRef.current}
                                     documentTitle="Medication List"
+                                    // Zero the printed page margin so the browser has no room to
+                                    // draw its default header/footer (page title, URL, date, page
+                                    // numbers) — in Chrome/Edge they're only painted in that margin,
+                                    // so this hides them by default. We add the whitespace back as
+                                    // padding on the body so text isn't jammed against the paper edge.
+                                    // (Firefox/Safari are less consistent; there the print dialog's
+                                    // "Headers and footers" option may still apply.)
+                                    pageStyle={`
+                                        @page { size: auto; margin: 0; }
+                                        @media print { body { margin: 0.6in 0.75in; } }
+                                    `}
                                 />
                                 {/* Email button + its provider dropdown, kept together as one unit.
                                     On phones the pair wraps to its own line flush-left (ml-0); on
@@ -339,7 +350,7 @@ export default function MedList() {
                                 <span className="d-inline-flex align-items-center ml-0 ml-md-3" style={{ gap: '0.075in', verticalAlign: 'middle' }}>
                                     {/* Opens the mail app with the list pre-filled to the email on file. */}
                                     <button type="button" className="btn mb-3" style={{ backgroundColor: '#fff', color: '#212529', border: '1px solid #000' }} onClick={emailMedList}>
-                                        Email My List
+                                        Email List
                                     </button>
                                     {/* Which email service the button opens. */}
                                     <select

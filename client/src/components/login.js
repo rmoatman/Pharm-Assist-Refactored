@@ -47,8 +47,9 @@ export default function Login() {
           <input type="email" className="form-control" id="loginEmail" onChange={(e) => setEmail(e.target.value)} value={email} required />
         </div>
 
-        {/* Password input -- typing updates the "password" state via setPassword */}
-        <div className="col-md-12">
+        {/* Password input -- typing updates the "password" state via setPassword.
+            mt-4 gives a bit more breathing room above the Password field. */}
+        <div className="col-md-12 mt-4">
           <label htmlFor="loginPassword" className="form-label">Password</label>
           <input type="password" className="form-control" id="loginPassword" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password} required />
         </div>
@@ -68,8 +69,9 @@ export default function Login() {
           </button>
         </div>
 
-        {/* Link to the sign-up page for users without an account */}
-        <div className="col-12">
+        {/* Link to the sign-up page for users without an account.
+            mt-3 matches the gap above the Log In button. */}
+        <div className="col-12 mt-3">
           <p>Don't have an account? <Link to="/sign-up">Sign up</Link></p>
         </div>
       </form>
