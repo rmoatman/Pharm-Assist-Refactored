@@ -4,7 +4,7 @@ _Refactored by R. Oatman with assistance from Claude Code (Anthropic) — July 2
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <br><br>
 
-<img src="./client/src/images/screenshot-1.png" alt="Image of Pharm-Assist homepage">
+<img src="./client/src/images/Screenshot.png" alt="Image of Pharm-Assist homepage">
 <br><br>
 
 <img src="./client/src/images/Screenshot-2.png" alt="Image of Pharm-Assist Medication List">
