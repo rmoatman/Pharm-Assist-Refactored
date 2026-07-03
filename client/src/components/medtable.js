@@ -156,7 +156,8 @@ export default function MedTable(props) {
                             <>
                                 <button
                                     type="button"
-                                    className="btn btn-outline-success btn-sm d-block w-100 mb-1"
+                                    className="btn btn-outline-success btn-sm d-block w-100"
+                                    style={{ marginBottom: '0.15in' }}
                                     onClick={() => saveEdit(med._id)}
                                     aria-label={`Save schedule for ${med.title}`}
                                 >
@@ -175,7 +176,8 @@ export default function MedTable(props) {
                             <>
                                 <button
                                     type="button"
-                                    className="btn btn-outline-primary btn-sm d-block w-100 mb-1"
+                                    className="btn btn-outline-primary btn-sm d-block w-100"
+                                    style={{ marginBottom: '0.15in' }}
                                     onClick={() => startEdit(med)}
                                     aria-label={`Edit schedule for ${med.title}`}
                                 >
@@ -221,12 +223,12 @@ export default function MedTable(props) {
     // Edit/Remove (or Save/Cancel) buttons, side by side, for a card.
     const cardActions = (med, isEditing) => (isEditing ? (
         <>
-            <button type="button" className="btn btn-outline-success btn-sm me-2" onClick={() => saveEdit(med._id)}>Save</button>
+            <button type="button" className="btn btn-outline-success btn-sm" style={{ marginRight: '0.15in' }} onClick={() => saveEdit(med._id)}>Save</button>
             <button type="button" className="btn btn-outline-secondary btn-sm" onClick={cancelEdit}>Cancel</button>
         </>
     ) : (
         <>
-            <button type="button" className="btn btn-outline-primary btn-sm me-2" onClick={() => startEdit(med)}>Edit</button>
+            <button type="button" className="btn btn-outline-primary btn-sm" style={{ marginRight: '0.15in' }} onClick={() => startEdit(med)}>Edit</button>
             <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => onDelete(med.title)}>Remove</button>
         </>
     ));

@@ -317,10 +317,10 @@ export default function MedList() {
                 {/* Top section: the medication table. */}
                 <div className="row">
                     <div className="col-md-12">
-                        <h1 className="mt-4 mb-4">Your Medication List</h1>
-                        {/* Print + Email buttons on the left, "Add a Medication" button on the right.
-                            Wraps on small screens so the buttons don't overflow. */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                        <h1 className="mt-4 mb-4 text-center">Your Medication List</h1>
+                        {/* All action buttons left-aligned; the email-provider dropdown stays to the
+                            right of Email My List. Wraps on small screens so nothing overflows. */}
+                        <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                             <div>
                                 {/* Print / Save-as-PDF button: prints the off-screen PrintableMedList below. */}
                                 <ReactToPrint
@@ -350,7 +350,7 @@ export default function MedList() {
                                     <option value="mailto">Other (default app)</option>
                                 </select>
                             </div>
-                            {/* Right-aligned: smooth-scrolls down to the Add a Medication section. */}
+                            {/* Smooth-scrolls down to the Add a Medication section. */}
                             <button
                                 type="button"
                                 className="btn btn-outline-info mb-3"
