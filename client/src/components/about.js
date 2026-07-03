@@ -54,10 +54,11 @@ export default function About() {
       <div className="container">
         <div className="row">
           <div className="col-md-12 m-3 m-md-5">
-            <h1>Hello and welcome to Pharm-Assist!</h1>
+            <h1>Welcome to Pharm-Assist!</h1>
             <p>
-              Pharm-Assist is a visual directory to help you recognize and
-              organize your medications.
+              Pharm-Assist organizes your daily medications, provides an electronic,
+              paper and email of your medicines on demand, alerts you to potential
+              interactions with other medications, and checks for discounts!
             </p>
             <ul>
               <li>Do you take a variety of medications every day?</li>
