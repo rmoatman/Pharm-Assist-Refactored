@@ -1,7 +1,7 @@
 /* Pharm-Assist service worker — enables install ("Add to Home Screen") and
    basic offline caching of the app shell. It deliberately never caches API
    calls, and serves fresh HTML when online. Bump CACHE on meaningful changes. */
-const CACHE = 'pharm-assist-v1';
+const CACHE = 'pharm-assist-v2';
 
 // Pre-cache the app shell so navigations work offline.
 self.addEventListener('install', (event) => {
