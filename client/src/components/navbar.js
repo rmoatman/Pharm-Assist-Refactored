@@ -71,7 +71,7 @@ const handleFormSubmit = async (event) => {
       {/* Brand link on the left -- clicking it returns to the home page.
           Shows the wordmark logo (public/Pharm-Wordmark.png). The filename must
           match exactly on case-sensitive hosts (Render). */}
-      <Link className="navbar-brand" to="/">
+      <Link className="navbar-brand" to="/" style={{ marginLeft: '0.25in' }}>
         <img src={process.env.PUBLIC_URL + "/Pharm-Wordmark.png"} alt="Pharm-Assist" className="navbar-logo" />
       </Link>
       {/* Hamburger toggle button (Bootstrap) shown on small screens to expand/collapse the menu */}
@@ -88,13 +88,6 @@ const handleFormSubmit = async (event) => {
           {loggedIn === false && (
           <li className="nav-item">
             <Link className="navbar-brand" to="/sign-up" style={{ color: '#007bff' }} onClick={() => setNavOpen(false)}>Sign Up</Link>
-          </li>
-          )}
-          {/* Only show Med List link when logged IN — and hide it while already on
-              the medication page (no point linking to the page you're viewing). */}
-          {loggedIn === true && location.pathname !== '/med-list' && (
-          <li className="nav-item">
-            <Link className="navbar-brand" to="/med-list" onClick={() => setNavOpen(false)}>Med List</Link>
           </li>
           )}
           {/* Jump to the home page's interaction / price checkers. Only shown in the
@@ -120,7 +113,12 @@ const handleFormSubmit = async (event) => {
             <button className="btn btn-success px-4" type="submit" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>Log In</button>
           </form>
           )}
-          {/* When logged IN: show a Log Out button that runs handleLogOut */}
+          {/* When logged IN: a green Med List button (styled like Log Out) sitting
+              ~0.5in to its left (mr-lg-5 = 3rem = 0.5in, desktop only), then the
+              Log Out button. Med List is hidden while already on the medication page. */}
+          {loggedIn === true && location.pathname !== '/med-list' && (
+          <Link to="/med-list" className="btn btn-success mt-2 mt-lg-0 mr-lg-5" onClick={() => setNavOpen(false)}>My Medication List</Link>
+          )}
           {loggedIn === true && (
           <button onClick={handleLogOut} className="btn btn-success mt-2 mt-lg-0" type="submit">Log Out</button>
           )}

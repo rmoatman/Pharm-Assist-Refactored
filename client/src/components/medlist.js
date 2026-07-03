@@ -355,7 +355,7 @@ export default function MedList() {
                                     {/* Which email service the button opens. */}
                                     <select
                                         className="custom-select w-auto mb-3"
-                                        style={{ height: 'calc(1.5em + 0.75rem + 2px)' }}
+                                        style={{ height: 'calc(1.5em + 0.75rem + 2px)', border: '1px solid #000', color: '#212529' }}
                                         value={emailProvider}
                                         onChange={(e) => setEmailProvider(e.target.value)}
                                         aria-label="Email provider"
@@ -372,8 +372,7 @@ export default function MedList() {
                                 row while Print / Email My List stay left-aligned. */}
                             <button
                                 type="button"
-                                className="btn btn-outline-info mb-3"
-                                style={{ marginLeft: 'auto' }}
+                                className="btn btn-outline-info mb-3 ml-md-auto font-weight-bold"
                                 onClick={() => document.getElementById('add-medication')?.scrollIntoView({ behavior: 'smooth' })}
                             >
                                 Add a Medication

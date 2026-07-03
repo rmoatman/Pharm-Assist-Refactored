@@ -12,7 +12,13 @@
     font-size: 3rem;
 }
 
-/* Code below this line will be used for printing */
+/* Code below this line will be used for printing.
+   Keep the page margin at 0 so the browser has no room to draw its default
+   header/footer (page title, URL, date, page numbers). This rule is bundled
+   globally, so it must not re-introduce a margin that would override the
+   per-print pageStyle on the medication list (react-to-print copies these
+   styles into its print iframe). Individual printouts add their own inner
+   spacing via a printed body margin. */
 @page {
-  margin: 1in;
+  margin: 0;
 }
