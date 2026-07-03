@@ -109,11 +109,13 @@ const handleFormSubmit = async (event) => {
           {/* When NOT logged in: inline login form. Stacks vertically on small screens,
               sits in a row on large screens. */}
           {loggedIn === false && (
-          <form onSubmit={handleFormSubmit} className="d-flex flex-column flex-lg-row gap-2 mt-2 mt-lg-0">
-            {/* Email input -- updates the "email" state */}
-            <input type="text" className="form-control" id="inputUsername" placeholder="Email" onChange={(e) => setEmail(e.target.value)} value={email}/>
+          <form onSubmit={handleFormSubmit} className="d-flex flex-column flex-lg-row mt-2 mt-lg-0">
+            {/* Email input -- updates the "email" state. BS4 has no gap utility, so
+                spacing between fields comes from margins: vertical when stacked
+                (mobile), horizontal when in a row (lg+). */}
+            <input type="text" className="form-control mb-2 mb-lg-0 mr-lg-2" id="inputEmail" placeholder="Email" onChange={(e) => setEmail(e.target.value)} value={email}/>
             {/* Password input -- updates the "password" state */}
-            <input type="password" className="form-control" id="inputPassword4" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password}/>
+            <input type="password" className="form-control mb-2 mb-lg-0 mr-lg-2" id="inputPassword4" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password}/>
             <button className="btn btn-success" type="submit">Login</button>
           </form>
           )}

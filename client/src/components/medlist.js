@@ -338,7 +338,7 @@ export default function MedList() {
                                 </button>
                                 {/* Which email service the button opens. */}
                                 <select
-                                    className="form-select d-inline-block w-auto mb-3"
+                                    className="custom-select d-inline-block w-auto mb-3"
                                     style={{ marginLeft: '0.075in', height: 'calc(1.5em + 0.75rem + 2px)', verticalAlign: 'middle' }}
                                     value={emailProvider}
                                     onChange={(e) => setEmailProvider(e.target.value)}
@@ -370,7 +370,7 @@ export default function MedList() {
                                 <label htmlFor="sortBy" style={{ marginRight: '0.15in' }}>Sort by:</label>
                                 <select
                                     id="sortBy"
-                                    className="form-select d-inline-block w-auto"
+                                    className="custom-select d-inline-block w-auto"
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value)}
                                 >

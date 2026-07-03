@@ -251,7 +251,7 @@ export default function MedTable(props) {
                             <div style={{ fontSize: '0.85em', color: '#555', marginTop: '6px' }}>{info[med.title].description}</div>
                         )}
                         <div className="mt-3 mb-2">
-                            <div className="fw-bold mb-1" style={{ fontSize: '0.85em' }}>Schedule</div>
+                            <div className="font-weight-bold mb-1" style={{ fontSize: '0.85em' }}>Schedule</div>
                             {scheduleChecks(med, isEditing)}
                         </div>
                         <div className="mt-2">{cardActions(med, isEditing)}</div>

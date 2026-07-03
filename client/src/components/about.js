@@ -54,7 +54,7 @@ export default function About() {
       <div className="container">
         <div className="row">
           <div className="col-md-12 m-3 m-md-5">
-            <h1 className="text-center text-md-start">Welcome to Pharm-Assist!</h1>
+            <h1 className="text-center text-md-left">Welcome to Pharm-Assist!</h1>
             <ul>
               <li>Do you take a variety of medications every day?</li>
               <li>
