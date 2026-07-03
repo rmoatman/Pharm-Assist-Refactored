@@ -326,7 +326,7 @@ export default function MedList() {
                                 {/* Print / Save-as-PDF button: prints the off-screen PrintableMedList below. */}
                                 <ReactToPrint
                                     trigger={() => (
-                                        <button type="button" className="btn btn-outline-secondary mb-3" style={{ verticalAlign: 'middle' }}>
+                                        <button type="button" className="btn mb-3" style={{ verticalAlign: 'middle', backgroundColor: '#fff', color: '#000', border: '1px solid #000' }}>
                                             Print / Save as PDF
                                         </button>
                                     )}

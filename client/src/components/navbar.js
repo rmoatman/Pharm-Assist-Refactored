@@ -71,7 +71,7 @@ const handleFormSubmit = async (event) => {
       {/* Brand link on the left -- clicking it returns to the home page.
           Shows the wordmark logo (public/Pharm-Wordmark.png). The filename must
           match exactly on case-sensitive hosts (Render). */}
-      <Link className="navbar-brand" to="/" style={{ marginLeft: '0.25in' }}>
+      <Link className="navbar-brand ml-lg-4" to="/">
         <img src={process.env.PUBLIC_URL + "/Pharm-Wordmark.png"} alt="Pharm-Assist" className="navbar-logo" />
       </Link>
       {/* Hamburger toggle button (Bootstrap) shown on small screens to expand/collapse the menu */}
