@@ -21,6 +21,7 @@ import MedList from "./components/medlist.js";   // The "/med-list" page (logged
 import Navbar from "./components/navbar.js";     // Navigation bar shown on every page.
 import SignUp from "./components/signup.js";     // The "/sign-up" page (logged-out only).
 import Login from "./components/login.js";       // The "/login" page (logged-out only).
+import Privacy from "./components/privacy.js";   // The "/privacy" page (always available).
 // Import the AuthContext itself (default export) so we can read loggedIn from it.
 import AuthContext from "./context/authcontext";
 
@@ -94,6 +95,10 @@ function Routed() {
         {/* "/" home route. "exact" means match the path exactly, not sub-paths. */}
         <Route exact path="/">
           <About />
+        </Route>
+        {/* Privacy & Security page — available whether logged in or out. */}
+        <Route exact path="/privacy">
+          <Privacy />
         </Route>
         {/* Switch renders only the first matching Route inside it. */}
         <Switch>

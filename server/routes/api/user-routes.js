@@ -25,7 +25,8 @@ const {
   login,         // verify credentials and log the user in
   register,      // create a new user account
   logout,        // log the current user out
-  loggedin       // report whether a user is currently logged in
+  loggedin,      // report whether a user is currently logged in
+  deleteAccount  // permanently delete the logged-in user's account
 } = require('../../controllers/user-controller');
 
 // Import authMiddleware: a gatekeeper function that checks the request
@@ -59,6 +60,10 @@ router.route('/saveMed').post(authMiddleware, saveMed);
 // POST /api/users/updateMed -> change a medicine's dosing schedule.
 // Protected by authMiddleware (must be logged in).
 router.route('/updateMed').post(authMiddleware, updateMed);
+
+// DELETE /api/users/deleteAccount -> permanently delete the logged-in user.
+// Protected by authMiddleware (must be logged in).
+router.route('/deleteAccount').delete(authMiddleware, deleteAccount);
 
 // GET  /api/users/deleteMed -> delete a medicine from the user's list.
 // Protected by authMiddleware. (Note: uses GET even though it deletes.)

@@ -203,4 +203,23 @@ module.exports = {
     }
     return res.json(updatedUser); // Send back the updated user
   },
+
+  // deleteAccount: permanently delete the logged-in user (and their medication
+  // list, which lives inside the user document). Also clears the auth cookie.
+  // Input: { user } (from authMiddleware); res.
+  async deleteAccount({ user }, res) {
+    try {
+      const deleted = await User.findByIdAndDelete(user._id);
+      if (!deleted) {
+        return res.status(404).json({ message: 'Account not found.' });
+      }
+      // Expire the auth cookie so the browser is logged out immediately.
+      return res
+        .cookie('token', '', { ...cookieOptions, expires: new Date(0) })
+        .json({ message: 'Your account and data have been deleted.' });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ errorMessage: 'Could not delete the account. Please try again.' });
+    }
+  },
 }
