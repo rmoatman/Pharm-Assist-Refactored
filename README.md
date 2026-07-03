@@ -7,7 +7,7 @@ _Refactored by R. Oatman with assistance from Claude Code (Anthropic) — July 2
 <img src="./client/src/images/screenshot.png" alt="Image of Pharm-Assist homepage">
 <br><br>
 
-Pharm-Assist is not currently deployed. It runs locally (see [Local Installation](#local-installation)).
+🔗 **Live demo:** [pharm-assist-refactored.onrender.com](https://pharm-assist-refactored.onrender.com/) — hosted on Render's free tier, so the first visit after it's been idle may take 30–60 seconds to wake up. You can also run it locally (see [Local Installation](#local-installation)).
 <br><br>
 
 ## Description
