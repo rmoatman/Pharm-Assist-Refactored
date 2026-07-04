@@ -55,7 +55,8 @@ export default function Privacy() {
       <ul>
         <li>When you check interactions, look up a medication, or view a description, the <strong>medication name</strong> (not your identity) is sent to public U.S. government drug databases (NLM RxNorm, openFDA, DailyMed).</li>
         <li>When you use the discount buttons, the medication name is used to open a price page on GoodRx or SingleCare in a new tab.</li>
-        <li>When you email your list, it is handed to your chosen email service (Gmail, Outlook, Yahoo, or your default mail app) — Pharm-Assist does not send email itself.</li>
+        <li>When you email your list, it is handed to your chosen email service (Gmail, Outlook, Yahoo, or your default mail app) — that email is composed and sent from your own account.</li>
+        <li>When you request a <strong>password reset</strong>, Pharm-Assist sends a reset link to your email address through Gmail. The message contains only a one-time, expiring link — no other personal information.</li>
       </ul>
 
       <p className="info-section-label">Security</p>
