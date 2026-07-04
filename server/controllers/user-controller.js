@@ -146,16 +146,22 @@ module.exports = {
         user.resetTokenExpires = new Date(Date.now() + RESET_TTL_MS);
         await user.save(); // pre('save') won't re-hash the password (it's unchanged)
 
-        // Build the link to the client reset page. CLIENT_URL is set in .env for
-        // dev (the React server) and prod; fall back to this request's origin.
-        const base = process.env.CLIENT_URL || `${req.protocol}://${req.get('host')}`;
-        const resetUrl = `${base}/reset-password?token=${rawToken}`;
-
-        // Don't let an email failure reveal anything or 500 the request.
-        try {
-          await sendPasswordResetEmail(email, resetUrl);
-        } catch (mailErr) {
-          console.error('reset email failed for', email, '-', mailErr.message);
+        // Build the link from a TRUSTED base URL only. We deliberately do NOT
+        // fall back to the request's Host header, which an attacker can spoof to
+        // send victims a reset link pointing at their own domain (reset-link
+        // poisoning / token theft). If CLIENT_URL isn't configured, fail closed:
+        // skip sending and log, rather than emit a poisonable link.
+        const base = process.env.CLIENT_URL;
+        if (base) {
+          const resetUrl = `${base}/reset-password?token=${rawToken}`;
+          // Fire-and-forget: don't await the email. Awaiting it made requests for
+          // real accounts measurably slower than for non-existent ones, which
+          // leaks account existence via timing despite the generic reply.
+          sendPasswordResetEmail(email, resetUrl).catch((mailErr) => {
+            console.error('reset email failed for', email, '-', mailErr.message);
+          });
+        } else {
+          console.error('CLIENT_URL is not set — cannot send a password reset link.');
         }
       }
       return res.json(generic);
