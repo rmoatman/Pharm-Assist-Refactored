@@ -13,6 +13,17 @@
 const { User } = require('../models');            // The User Mongoose model (find/create/update users)
 const { signToken, secret } = require('../utils/auth'); // Helper that creates a signed JWT + the shared signing secret
 const jwt = require('jsonwebtoken');              // JWT library, used here to verify a token in "loggedin"
+const crypto = require('crypto');                 // Node's built-in crypto: random reset tokens + hashing
+const { sendPasswordResetEmail } = require('../utils/mailer'); // Sends the password-reset email (Gmail/Nodemailer)
+
+// Hash a reset token with SHA-256. The raw token (high-entropy random bytes) is
+// emailed to the user; only this hash is stored, so the DB alone can't reset a
+// password. SHA-256 (fast, unsalted) is fine here BECAUSE the token is random
+// and long — unlike passwords, it isn't guessable/brute-forceable.
+const hashToken = (token) => crypto.createHash('sha256').update(token).digest('hex');
+
+// How long a reset link stays valid: 1 hour.
+const RESET_TTL_MS = 60 * 60 * 1000;
 
 // In production the client is served over HTTPS from the same origin, so the
 // auth cookie must be Secure + SameSite=None. For local http://localhost dev,
@@ -111,6 +122,82 @@ module.exports = {
     res
     .cookie("token", token, cookieOptions) // Store the token in the cookie
     .send();                               // Send an empty successful response
+  },
+
+  // requestReset: start the forgot-password flow. Takes an email, and IF an
+  // account exists, generates a one-time reset token, stores its hash + expiry,
+  // and emails the user a reset link. Always responds the SAME way regardless of
+  // whether the email exists, so the endpoint can't be used to discover which
+  // addresses have accounts. Takes the full req so we can build an absolute link.
+  async requestReset(req, res) {
+    const email = (req.body.email || '').trim().toLowerCase();
+    if (!email) {
+      return res.status(400).json({ errorMessage: 'Email is required.' });
+    }
+    // Generic reply used in every non-error case (found or not).
+    const generic = { message: 'If an account exists for that email, a reset link is on its way.' };
+
+    try {
+      const user = await User.findOne({ email });
+      if (user) {
+        // Random, high-entropy token: emailed raw, stored only as a hash.
+        const rawToken = crypto.randomBytes(32).toString('hex');
+        user.resetTokenHash = hashToken(rawToken);
+        user.resetTokenExpires = new Date(Date.now() + RESET_TTL_MS);
+        await user.save(); // pre('save') won't re-hash the password (it's unchanged)
+
+        // Build the link to the client reset page. CLIENT_URL is set in .env for
+        // dev (the React server) and prod; fall back to this request's origin.
+        const base = process.env.CLIENT_URL || `${req.protocol}://${req.get('host')}`;
+        const resetUrl = `${base}/reset-password?token=${rawToken}`;
+
+        // Don't let an email failure reveal anything or 500 the request.
+        try {
+          await sendPasswordResetEmail(email, resetUrl);
+        } catch (mailErr) {
+          console.error('reset email failed for', email, '-', mailErr.message);
+        }
+      }
+      return res.json(generic);
+    } catch (err) {
+      console.error('requestReset error:', err);
+      // Still generic — don't leak whether the account exists.
+      return res.json(generic);
+    }
+  },
+
+  // resetPassword: finish the flow. Takes { token, password }, verifies the token
+  // (correct hash AND not expired), sets the new password, and consumes the token
+  // so the link can't be reused.
+  async resetPassword({ body }, res) {
+    const { token, password } = body;
+    if (!token || !password) {
+      return res.status(400).json({ errorMessage: 'This reset link is missing information. Please request a new one.' });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({ errorMessage: 'Password must be at least 6 characters.' });
+    }
+
+    try {
+      // Match on the token hash AND an expiry still in the future.
+      const user = await User.findOne({
+        resetTokenHash: hashToken(token),
+        resetTokenExpires: { $gt: new Date() },
+      });
+      if (!user) {
+        return res.status(400).json({ errorMessage: 'This reset link is invalid or has expired. Please request a new one.' });
+      }
+
+      user.password = password;          // pre('save') hook hashes the new password
+      user.resetTokenHash = undefined;   // single-use: consume the token
+      user.resetTokenExpires = undefined;
+      await user.save();
+
+      return res.json({ message: 'Your password has been reset. You can now log in.' });
+    } catch (err) {
+      console.error('resetPassword error:', err);
+      return res.status(400).json({ errorMessage: 'Could not reset your password. Please request a new link.' });
+    }
   },
 
 //logout

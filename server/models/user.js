@@ -56,6 +56,18 @@ const UserSchema = new Schema(
     // carries their own list of medicines inline (not a separate
     // collection with references). Shape is defined by medicineSchema.
     medList: [medicineSchema],
+
+    // --- Password reset (forgot-password flow) ---
+    // We email the user a random token but store only its SHA-256 HASH here,
+    // so a leaked database can't be used to reset anyone's password. The token
+    // is single-use (cleared after a successful reset) and short-lived.
+    resetTokenHash: {
+      type: String,
+    },
+    // When the reset token stops working. Compared against "now" on reset.
+    resetTokenExpires: {
+      type: Date,
+    },
   },
   // The commented-out block below (toJSON virtuals) is disabled. If
   // enabled, it would include Mongoose "virtual" fields when a document

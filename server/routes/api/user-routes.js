@@ -26,7 +26,9 @@ const {
   register,      // create a new user account
   logout,        // log the current user out
   loggedin,      // report whether a user is currently logged in
-  deleteAccount  // permanently delete the logged-in user's account
+  deleteAccount, // permanently delete the logged-in user's account
+  requestReset,  // start forgot-password: email a reset link
+  resetPassword  // finish forgot-password: set a new password from a token
 } = require('../../controllers/user-controller');
 
 // Import authMiddleware: a gatekeeper function that checks the request
@@ -48,6 +50,12 @@ router.route('/logout').get(logout);
 
 // GET  /api/users/loggedin  -> check if someone is currently logged in.
 router.route('/loggedin').get(loggedin);
+
+// POST /api/users/request-reset  -> email a password-reset link (public).
+router.route('/request-reset').post(requestReset);
+
+// POST /api/users/reset-password -> set a new password from a reset token (public).
+router.route('/reset-password').post(resetPassword);
 
 // GET  /api/users/getSingleUser -> get the logged-in user's info.
 // Protected: authMiddleware runs first to confirm the token is valid.

@@ -4,7 +4,7 @@
 // and redirects the user to their medication list.
 
 import React, { useContext, useState } from 'react'; // useState = local state; useContext = read a shared context (auth state).
-import { useHistory, Link } from "react-router-dom"; // useHistory = programmatic navigation; Link = clickable route link.
+import { useHistory, useLocation, Link } from "react-router-dom"; // navigate / read route state / route links.
 import AuthContext from "../context/authcontext.js"; // Shared login state (whether a user is logged in) and helpers.
 import axios from "axios"; // HTTP client used to call the REST API.
 
@@ -15,6 +15,8 @@ export default function Login() {
 
   const { getLoggedIn } = useContext(AuthContext); // getLoggedIn() re-checks the server for the current login status.
   const history = useHistory();                    // Lets us send the user to another page in code.
+  const location = useLocation();                  // Route state; carries a flag after a successful password reset.
+  const justReset = location.state?.reset === true; // True when redirected here from the reset-password page.
 
   // Runs when the Log In form is submitted (user clicks "Log In" or presses Enter).
   const handleFormSubmit = async (event) => {
@@ -39,6 +41,10 @@ export default function Login() {
   return (
     <div className="container">
       <h3 className="mt-4">Log In</h3>
+      {/* Shown once after the user completes a password reset (redirected here). */}
+      {justReset && (
+        <p className="text-success mt-2">Your password has been reset. Please log in with your new password.</p>
+      )}
       {/* Login form -- handleFormSubmit runs on submit */}
       <form onSubmit={handleFormSubmit} className="row g-3">
         {/* Email input -- typing updates the "email" state via setEmail */}
@@ -69,10 +75,11 @@ export default function Login() {
           </button>
         </div>
 
-        {/* Link to the sign-up page for users without an account.
+        {/* Forgot-password link + sign-up link for users without an account.
             mt-3 matches the gap above the Log In button. */}
         <div className="col-12 mt-3">
-          <p>Don't have an account? <Link to="/sign-up">Sign up</Link></p>
+          <p className="mb-1"><Link to="/forgot-password">Forgot password?</Link></p>
+          <p className="mb-0">Don't have an account? <Link to="/sign-up">Sign up</Link></p>
         </div>
       </form>
     </div>

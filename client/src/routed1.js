@@ -21,6 +21,8 @@ import MedList from "./components/medlist.js";   // The "/med-list" page (logged
 import Navbar from "./components/navbar.js";     // Navigation bar shown on every page.
 import SignUp from "./components/signup.js";     // The "/sign-up" page (logged-out only).
 import Login from "./components/login.js";       // The "/login" page (logged-out only).
+import ForgotPassword from "./components/forgotpassword.js"; // "/forgot-password" (logged-out).
+import ResetPassword from "./components/resetpassword.js";   // "/reset-password?token=..." (logged-out).
 import Privacy from "./components/privacy.js";   // The "/privacy" page (always available).
 // Import the AuthContext itself (default export) so we can read loggedIn from it.
 import AuthContext from "./context/authcontext";
@@ -110,6 +112,14 @@ function Routed() {
             </Route>
             <Route exact path="/login">
               <Login />
+            </Route>
+            {/* Forgot-password flow: request a link, then set a new password
+                from the emailed token. Both reachable while logged out. */}
+            <Route exact path="/forgot-password">
+              <ForgotPassword />
+            </Route>
+            <Route exact path="/reset-password">
+              <ResetPassword />
             </Route>
           </>
         )}

@@ -18,3 +18,9 @@ services:
         generateValue: true            # Render generates a strong secret once and keeps it
       - key: MONGODB_URI
         sync: false                    # you paste your MongoDB Atlas connection string at deploy
+      - key: CLIENT_URL
+        value: https://pharm-assist-refactored.onrender.com  # base for password-reset links in emails
+      - key: GMAIL_USER
+        sync: false                    # sending Gmail address — set in the dashboard
+      - key: GMAIL_APP_PASSWORD
+        sync: false                    # Google App Password (secret) — set in the dashboard
