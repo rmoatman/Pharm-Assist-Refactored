@@ -18,9 +18,6 @@ const TEAM = [
 export default function AboutPage() {
   return (
     <main className="info-page">
-      {/* Brand emblem (the PWA/app icon), centered above the heading. */}
-      <img className="info-logo" src={process.env.PUBLIC_URL + '/logo512.png'} alt="Pharm-Assist" />
-
       <p className="info-eyebrow">About</p>
       <h1>From a class project to a living app.</h1>
 

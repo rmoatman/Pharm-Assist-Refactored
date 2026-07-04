@@ -46,9 +46,6 @@ const GUIDES = [
 export default function InstallApp() {
   return (
     <main className="info-page">
-      {/* Brand emblem (the PWA/app icon), centered above the heading. */}
-      <img className="info-logo" src={process.env.PUBLIC_URL + '/logo512.png'} alt="Pharm-Assist" />
-
       <p className="info-eyebrow">Install App</p>
       <h1>Keep your meds within reach.</h1>
 
