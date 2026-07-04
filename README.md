@@ -16,13 +16,15 @@ _Refactored by R. Oatman with assistance from Claude Code (Anthropic) — July 2
 ## Description
 Pharm-Assist is an app designed to assist users in managing their medications. Pharm-Assist allows users to:
 
-* Regularly update medications and daily schedules
+* Regularly update medications and daily schedules (including renaming a medication after adding it)
 * Conveniently print (or save as PDF) an up-to-date list of medications for dosing and sharing with providers
 * Sort the list (by name or time of day) and email it to the address on file
 * Quickly check medications for possible interactions with each other
-* See what each medication is used for, plus a text description of the pill (color, shape, imprint)
+* See what each medication is used for (toggleable to keep the list compact on mobile), plus a text description of the pill (color, shape, imprint)
 * Autocomplete a medication's name and strength while adding it
 * Check for prescription discounts (GoodRx / SingleCare)
+* Create an account and **reset a forgotten password by email**
+* **Install Pharm-Assist as an app** on a phone or desktop (Progressive Web App)
 <br><br>
 
 > **Disclaimer:** Pharm-Assist is for informational purposes only and is **not medical advice**. Interaction and drug information comes from public FDA/NLM data and may be incomplete or out of date. Always consult a healthcare professional or pharmacist.
@@ -42,6 +44,8 @@ Pharm-Assist is an app designed to assist users in managing their medications. P
 * Express.js — REST API
 * MongoDB + Mongoose
 * JWT authentication + bcrypt password hashing
+* **Nodemailer** (Gmail) — password-reset emails
+* **Progressive Web App** — installable, with a service worker + branded app icon
 * Axios for API calls
 * NLM **RxNorm** API — medication names, strengths, and autocomplete
 * **openFDA** drug labeling API — interaction checks, "used for," and pill descriptions
@@ -70,6 +74,8 @@ The server reads configuration from `server/.env`. A local default is used if it
 cp server/.env.example server/.env
 # then edit server/.env to set JWT_SECRET (and MONGODB_URI if not using the default)
 ~~~
+
+To enable **password-reset emails** locally, also set `GMAIL_USER`, `GMAIL_APP_PASSWORD` (a Google [App Password](https://support.google.com/accounts/answer/185833), not your login password), and `CLIENT_URL` (the base URL used in reset links). If these are unset the app still runs — it just logs the reset link to the server console instead of emailing it.
 
 <br>
 
@@ -135,9 +141,11 @@ This project was refactored and extended in July 2026 (with assistance from Clau
 
 **Features**
 * **Interaction flagging** on the medication list, plus a **public homepage checker** (enter two drugs, no sign-in).
-* **Print / Save-as-PDF** medication list, grouped into a mini-table per time of day with checkboxes.
+* **Print / Save-as-PDF** medication list, grouped into a mini-table per time of day with checkboxes (the browser's default header/footer are suppressed on this printout).
 * **Sort** the on-screen list by name or time of day (multi-time meds sort by their earliest time), and **email** it — opens a pre-filled message in Gmail, Outlook, Yahoo, or your default mail app.
-* **Edit** a medication's dosing schedule after adding it, and a new **Weekly** dosing option.
+* **Edit** a medication's name and dosing schedule after adding it, a new **Weekly** dosing option, a **Show Medication Purpose** toggle, and a personalized "[First name]'s Medication List" heading.
 * **Prescription discount links** (GoodRx / SingleCare) per medication, plus a public price-check on the homepage.
-* A dedicated **Login page** and assorted UX fixes (auto-refreshing list, working delete, etc.).
+* A dedicated **Login page** with **forgot-password / password reset** by emailed single-use link (Nodemailer + Gmail; tokens are hashed, expiring, and single-use).
+* **Installable PWA** with a branded app icon, plus **About** and **Install** pages and a site footer (About · Install App · Privacy & Security · Email · GitHub).
+* Assorted UX fixes (auto-refreshing list, working delete, etc.).
 </content>

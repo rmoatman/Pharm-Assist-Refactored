@@ -16,11 +16,6 @@ export default function Disclaimer() {
         not provide medical advice. Interaction results may be incomplete or out of date. Always
         consult a qualified healthcare professional or pharmacist before making any decisions
         about your medications.
-        {/* Link to the Privacy & Security page. A plain anchor is used because the
-            disclaimer renders outside the Router (a full navigation is fine here). */}
-        <div className="mt-1">
-          <a href="/privacy">Privacy &amp; Security</a>
-        </div>
       </div>
     </footer>
   );

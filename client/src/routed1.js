@@ -24,6 +24,8 @@ import Login from "./components/login.js";       // The "/login" page (logged-ou
 import ForgotPassword from "./components/forgotpassword.js"; // "/forgot-password" (logged-out).
 import ResetPassword from "./components/resetpassword.js";   // "/reset-password?token=..." (logged-out).
 import Privacy from "./components/privacy.js";   // The "/privacy" page (always available).
+import AboutPage from "./components/aboutpage.js";   // The "/about" page (always available).
+import InstallApp from "./components/installapp.js"; // The "/install" page (always available).
 // Import the AuthContext itself (default export) so we can read loggedIn from it.
 import AuthContext from "./context/authcontext";
 
@@ -101,6 +103,13 @@ function Routed() {
         {/* Privacy & Security page — available whether logged in or out. */}
         <Route exact path="/privacy">
           <Privacy />
+        </Route>
+        {/* About and Install App pages — linked from the footer, available to all. */}
+        <Route exact path="/about">
+          <AboutPage />
+        </Route>
+        <Route exact path="/install">
+          <InstallApp />
         </Route>
         {/* Switch renders only the first matching Route inside it. */}
         <Switch>

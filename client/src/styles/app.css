@@ -46,6 +46,153 @@
   .navbar-logo { height: 70px; }
 }
 
+/* ===========================================================================
+   Info pages (About, Install App) — a calm, centered reading layout that
+   harmonizes with the site: brand teal accent (#A2C4C9), the site's fonts, and
+   Bootstrap spacing. Structure (eyebrow / heading / lead / cards / steps) is
+   adapted from the page mockups.
+   =========================================================================== */
+.info-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 3.5rem;
+}
+.info-logo {
+  display: block;
+  height: 84px;
+  width: auto;
+  margin: 0 auto 1.25rem;
+}
+.info-eyebrow {
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #0f766e;
+  margin: 0 0 0.75rem;
+}
+.info-page h1 {
+  text-align: center;
+  line-height: 1.1;
+  margin: 0 0 1.25rem;
+}
+.info-lead {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: #4a5b66;
+  text-align: center;
+  margin: 0 auto 2.5rem;
+  max-width: 60ch;
+}
+/* Accent card (the "why install" / "refactor" callouts). */
+.info-card {
+  background: #fff;
+  border: 1px solid #e0ebe8;
+  border-left: 3px solid #A2C4C9;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin: 0 0 2.5rem;
+  color: #4a5b66;
+}
+.info-card p { margin: 0; }
+.info-card strong { color: #10202b; }
+/* A labeled section (device group, "original team"). */
+.info-section-label {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  color: #7d8b94;
+  margin: 0 0 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid #e0ebe8;
+}
+.info-device { margin: 0 0 2.5rem; }
+.info-device h2 { margin: 0 0 0.15rem; }
+.info-device .info-meta {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  color: #7d8b94;
+  margin: 0 0 1rem;
+}
+/* Numbered steps with brand-teal circles. */
+ol.info-steps {
+  list-style: none;
+  counter-reset: step;
+  padding: 0;
+  margin: 0;
+}
+ol.info-steps li {
+  counter-increment: step;
+  position: relative;
+  padding: 0 0 1.1rem 2.75rem;
+  color: #4a5b66;
+}
+ol.info-steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0f766e;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 50%;
+}
+.info-note {
+  background: #eef6f4;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin: 0.25rem 0 0 2.75rem;
+  font-size: 0.95rem;
+  color: #4a5b66;
+}
+.info-divider { border: none; height: 1px; background: #e0ebe8; margin: 0 0 2.5rem; }
+/* Credits list (About). */
+.info-credits { list-style: none; padding: 0; margin: 0 0 2.5rem; }
+.info-credits li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid #e0ebe8;
+}
+.info-credits li:last-child { border-bottom: none; }
+.info-credit-name { font-weight: 600; color: #10202b; font-size: 1.1rem; }
+.info-credit-link { font-size: 0.85rem; white-space: nowrap; }
+@media (max-width: 520px) {
+  .info-credits li { flex-direction: column; gap: 0.15rem; }
+  .info-note { margin-left: 0; }
+}
+
+/* ===========================================================================
+   Site footer (navigation links) — separate from the yellow medical
+   disclaimer. Dark bar at the very bottom of every page.
+   =========================================================================== */
+.site-footer {
+  background: #10202b;
+  color: #cfe0dd;
+  text-align: center;
+  padding: 1.5rem 1rem;
+}
+.site-footer .footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1.4rem;
+  margin-bottom: 0.6rem;
+}
+.site-footer a { color: #cfe0dd; text-decoration: none; }
+.site-footer a:hover { color: #fff; text-decoration: underline; }
+.site-footer .footer-copy { color: #7d8b94; font-size: 0.85rem; }
+
 .App-link {
   color: #61dafb;
 }

@@ -17,6 +17,8 @@ import axios from "axios";
 import { AuthContextProvider } from "./context/authcontext";
 // Import the medical disclaimer banner shown at the bottom of every page.
 import Disclaimer from "./components/disclaimer";
+// Import the site footer (navigation links), shown below the disclaimer.
+import Footer from "./components/footer";
 
 // Tell axios to always send cookies/credentials with every request. This lets
 // the server recognize the logged-in user (e.g. via a session cookie) on each call.
@@ -33,6 +35,8 @@ function App() {
       <Routed />
       {/* Disclaimer shows on every page (it sits outside the routes). */}
       <Disclaimer />
+      {/* Site footer with navigation links, below the disclaimer. */}
+      <Footer />
     </AuthContextProvider>
   );
 }
