@@ -220,6 +220,16 @@ export default function MedList() {
         const su = encodeURIComponent('My Medication List');
         const body = encodeURIComponent(buildEmailListText());
 
+        // On phones/tablets the web-compose deep links (mail.google.com?view=cm,
+        // outlook/yahoo compose) get redirected to the mobile inbox/app and silently
+        // drop the pre-filled message. mailto: is the only reliable path there — it
+        // hands the draft to the device's default mail app (usually Gmail itself).
+        const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+        if (isMobile) {
+            window.location.href = `mailto:${to}?subject=${su}&body=${body}`;
+            return;
+        }
+
         let url;
         switch (emailProvider) {
             case 'outlook':
@@ -352,9 +362,11 @@ export default function MedList() {
                                     <button type="button" className="btn mb-3" style={{ backgroundColor: '#fff', color: '#212529', border: '1px solid #000' }} onClick={emailMedList}>
                                         Email List
                                     </button>
-                                    {/* Which email service the button opens. */}
+                                    {/* Which email service the button opens. Hidden on phones
+                                        (below the md breakpoint): mobile always uses mailto:, so
+                                        the provider choice has no effect there. */}
                                     <select
-                                        className="custom-select w-auto mb-3"
+                                        className="custom-select w-auto mb-3 d-none d-md-inline-block"
                                         style={{ height: 'calc(1.5em + 0.75rem + 2px)', border: '1px solid #000', color: '#212529' }}
                                         value={emailProvider}
                                         onChange={(e) => setEmailProvider(e.target.value)}
